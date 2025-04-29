@@ -51,6 +51,7 @@ For any corrections, clarifications, or suggestions regarding existing resources
 
 Join our community to discuss Flask, get help, or contribute to the project:
 - Discord: [https://discord.gg/tGcf37r8pb](https://discord.gg/tGcf37r8pb)
+- Website : https://flaskwiki.wiki/wiki-index
 - GitHub Issues: For bug reports and suggestions
 
 ## License
