@@ -1,0 +1,1148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="prose prose-lg max-w-none">
+    <h1 class="text-center text-4xl font-bold mb-6 text-primary">Flask Deployment Guide: From Development to Production</h1>
+    
+    <div class="alert alert-info mb-6">
+        <div class="flex">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>This comprehensive academic guide covers the theory and practice of deploying Flask applications to production environments, with a focus on security, scalability, and reliability best practices.</span>
+        </div>
+    </div>
+
+    <div class="mb-4 text-sm text-gray-400">Last updated: April 2025 | Reviewed by: Flask Core Team</div>
+    
+    <!-- TABLE OF CONTENTS -->
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl">Table of Contents</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="text-lg font-semibold">Fundamentals</h3>
+                    <ul class="list-disc ml-5">
+                        <li><a href="#intro-deployment" class="link link-hover">Introduction to Deployment</a></li>
+                        <li><a href="#preparation" class="link link-hover">Application Preparation</a>
+                            <ul class="list-disc ml-5">
+                                <li><a href="#env-config" class="link link-hover">Environment Configuration</a></li>
+                                <li><a href="#wsgi-servers" class="link link-hover">WSGI Servers</a></li>
+                                <li><a href="#dependencies" class="link link-hover">Dependency Management</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#deployment-options" class="link link-hover">Deployment Options</a>
+                            <ul class="list-disc ml-5">
+                                <li><a href="#paas" class="link link-hover">Platform-as-a-Service</a></li>
+                                <li><a href="#vps" class="link link-hover">Virtual Private Servers</a></li>
+                                <li><a href="#containers" class="link link-hover">Container-based Deployment</a></li>
+                                <li><a href="#serverless" class="link link-hover">Serverless Architecture</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold">Advanced Topics</h3>
+                    <ul class="list-disc ml-5">
+                        <li><a href="#deployment-steps" class="link link-hover">Step-by-Step Deployment</a>
+                            <ul class="list-disc ml-5">
+                                <li><a href="#heroku-deploy" class="link link-hover">Heroku Deployment</a></li>
+                                <li><a href="#vps-deploy" class="link link-hover">VPS Configuration</a></li>
+                                <li><a href="#docker-deploy" class="link link-hover">Docker Deployment</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#security" class="link link-hover">Security Considerations</a></li>
+                        <li><a href="#scaling" class="link link-hover">Scaling Strategies</a></li>
+                        <li><a href="#monitoring" class="link link-hover">Monitoring & Logging</a></li>
+                        <li><a href="#ci-cd" class="link link-hover">CI/CD Integration</a></li>
+                        <li><a href="#troubleshooting" class="link link-hover">Troubleshooting Guide</a></li>
+                        <li><a href="#resources" class="link link-hover">External Resources</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- INTRODUCTION -->
+    <div id="intro-deployment" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Introduction to Deployment</h2>
+            <p class="text-lg">
+                Deploying a Flask application to production requires a fundamental shift in approach from development environments. 
+                The process entails transforming your locally functioning application into a robust, secure, and scalable service 
+                that can reliably serve users in real-world conditions.
+            </p>
+            
+            <div class="alert alert-info mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <p class="font-semibold">Key Deployment Considerations</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li><strong>Security:</strong> Protection against common web vulnerabilities</li>
+                        <li><strong>Performance:</strong> Optimized request handling and resource utilization</li>
+                        <li><strong>Reliability:</strong> Mechanisms for recovery from failures</li>
+                        <li><strong>Scalability:</strong> Ability to handle increasing loads</li>
+                        <li><strong>Monitoring:</strong> Visibility into application health and performance</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p class="text-lg mt-4">
+                This guide approaches deployment from an academic perspective, presenting both theoretical frameworks 
+                and practical implementations. We'll analyze the trade-offs between different deployment strategies, 
+                examine architectural decisions, and provide evidence-based recommendations guided by industry standards.
+            </p>
+            
+            <div class="alert alert-warning mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <h3 class="font-bold">Important Prerequisite</h3>
+                    <div>This guide assumes you have a functioning Flask application with a well-structured codebase. Your application should follow Flask best practices like using application factories, blueprints for route organization, and proper dependency management.</div>
+                </div>
+            </div>
+            
+            <div class="flex justify-center mt-6">
+                <figure class="mx-auto">
+                    <img src="https://flask.palletsprojects.com/en/2.0.x/_images/flask-logo.png" alt="Flask Logo" class="max-w-xs">
+                    <figcaption class="text-center text-sm text-gray-500 mt-2">The Flask micro-framework offers flexibility in deployment approaches</figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PREPARING YOUR APP -->
+    <div id="preparation" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">1. Preparing Your Application for Production</h2>
+            <p class="text-lg mb-4">
+                The transition from development to production requires significant architectural and configuration changes to ensure security, performance, and reliability. This section explores these preparatory steps in detail.
+            </p>
+            
+            <div class="divider"></div>
+            
+            <h3 id="env-config" class="text-xl font-semibold text-secondary mb-2">1.1 Environment-Specific Configuration</h3>
+            <p class="mb-2">
+                A production-ready Flask application requires separation of configuration from code, following the principles outlined in the <a href="https://12factor.net/" target="_blank" class="link link-primary">Twelve-Factor App methodology</a>. Environment variables provide a secure and flexible way to manage configuration across different environments.
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># config.py - Advanced configuration management
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (for local development)
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
+
+class Config:
+    """Base configuration with shared settings across all environments"""
+    # Security settings
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-key-CHANGE-THIS-in-production'
+    SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT') or 'dev-salt-CHANGE-THIS'
+    
+    # Database settings
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        f"sqlite:///{os.path.join(basedir, 'app.db')}"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    # Mail settings
+    MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'false').lower() in ['true', 'yes', '1']
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    
+    # Session security
+    SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE', 'false').lower() in ['true', 'yes', '1']
+    SESSION_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_SECURE = True
+    
+    # Logging
+    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT', 'false').lower() in ['true', 'yes', '1']
+
+class DevelopmentConfig(Config):
+    """Development environment specific configuration"""
+    DEBUG = True
+    TESTING = False
+    
+class TestingConfig(Config):
+    """Testing environment specific configuration"""
+    DEBUG = False
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'  # Use in-memory database
+    WTF_CSRF_ENABLED = False  # Disable CSRF protection in tests
+    
+class ProductionConfig(Config):
+    """Production environment specific configuration"""
+    DEBUG = False
+    TESTING = False
+    
+    # Production-specific security enhancements
+    @classmethod
+    def init_app(cls, app):
+        # Production logging
+        import logging
+        from logging.handlers import SMTPHandler, RotatingFileHandler
+        
+        # Email error notifications
+        if app.config.get('MAIL_SERVER'):
+            credentials = None
+            if app.config.get('MAIL_USERNAME'):
+                credentials = (app.config.get('MAIL_USERNAME'), app.config.get('MAIL_PASSWORD'))
+            mail_handler = SMTPHandler(
+                mailhost=(app.config.get('MAIL_SERVER'), app.config.get('MAIL_PORT')),
+                fromaddr=f"no-reply@{app.config.get('MAIL_SERVER')}",
+                toaddrs=app.config.get('ADMINS', ['admin@example.com']),
+                subject='Application Error',
+                credentials=credentials,
+                secure=() if app.config.get('MAIL_USE_TLS') else None
+            )
+            mail_handler.setLevel(logging.ERROR)
+            app.logger.addHandler(mail_handler)
+        
+        # File logging
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=10)
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        ))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('Application startup')
+        
+        # Security headers
+        @app.after_request
+        def add_security_headers(response):
+            response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            response.headers['X-XSS-Protection'] = '1; mode=block'
+            return response
+
+# Configuration dictionary used in application factory
+config = {
+    'development': DevelopmentConfig,
+    'testing': TestingConfig,
+    'production': ProductionConfig,
+    'default': DevelopmentConfig
+}
+
+# Usage in app factory
+def create_app(config_name=None):
+    from flask import Flask
+    app = Flask(__name__)
+    
+    if config_name is None:
+        config_name = os.environ.get('FLASK_ENV', 'default')
+    
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+    
+    # Initialize extensions, register blueprints, etc.
+    
+    return app</code></pre>
+            </div>
+            
+            <div class="alert alert-info mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <p class="font-semibold">Environment Variables Best Practices</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li><strong>Never commit .env files</strong> to version control</li>
+                            <li><strong>Use different .env files</strong> for different environments (.env.development, .env.production)</li>
+                            <li><strong>Document required variables</strong> in a .env.example file</li>
+                            <li><strong>Set restrictive permissions</strong> on .env files (chmod 600)</li>
+                            <li><strong>Rotate secrets regularly</strong> for enhanced security</li>
+                        </ul>
+                        <p class="mt-2">Consider using a dedicated secrets management service in larger deployments.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-error mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <div>
+                    <h3 class="font-bold">Critical Security Warning</h3>
+                    <div>
+                        <p>Never store sensitive information directly in your code or commit environment files to version control. This is one of the most common causes of security breaches in web applications.</p>
+                        <p class="mt-2">For illustrative examples in this tutorial, we use fallback values, but in production, these should be provided exclusively via environment variables.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <h3 id="wsgi-servers" class="text-xl font-semibold text-secondary mb-2">1.2 WSGI Servers for Production</h3>
+            <p class="mb-2">
+                Flask's built-in development server is not suitable for production due to security, performance, and reliability limitations. Production deployments require dedicated WSGI (Web Server Gateway Interface) servers optimized for performance and reliability.
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="table table-compact w-full">
+                    <thead>
+                        <tr>
+                            <th>WSGI Server</th>
+                            <th>Key Features</th>
+                            <th>Best For</th>
+                            <th>Configuration Complexity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="https://gunicorn.org/" target="_blank" class="link link-primary">Gunicorn</a></td>
+                            <td>
+                                <ul class="list-disc ml-4">
+                                    <li>Pre-fork worker model</li>
+                                    <li>Compatible with various web servers</li>
+                                    <li>Multiple worker classes (sync, gevent, eventlet)</li>
+                                </ul>
+                            </td>
+                            <td>General-purpose deployments, most Flask applications</td>
+                            <td>Low</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://uwsgi-docs.readthedocs.io/en/latest/" target="_blank" class="link link-primary">uWSGI</a></td>
+                            <td>
+                                <ul class="list-disc ml-4">
+                                    <li>High performance with complex options</li>
+                                    <li>Built-in routing, caching, and monitoring</li>
+                                    <li>Emperor mode for managing multiple apps</li>
+                                </ul>
+                            </td>
+                            <td>High-performance requirements, complex deployments</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://docs.pylonsproject.org/projects/waitress/en/stable/" target="_blank" class="link link-primary">Waitress</a></td>
+                            <td>
+                                <ul class="list-disc ml-4">
+                                    <li>Pure-Python WSGI server</li>
+                                    <li>No dependencies</li>
+                                    <li>Cross-platform (Windows support)</li>
+                                </ul>
+                            </td>
+                            <td>Windows environments, simple deployments</td>
+                            <td>Very Low</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://github.com/jonashaag/bjoern" target="_blank" class="link link-primary">Bjoern</a></td>
+                            <td>
+                                <ul class="list-disc ml-4">
+                                    <li>Ultra-fast and lightweight</li>
+                                    <li>Written in C</li>
+                                    <li>Minimal feature set</li>
+                                </ul>
+                            </td>
+                            <td>Performance-critical applications, microservices</td>
+                            <td>Low</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <p class="mt-4 mb-2">Here's how to configure and use Gunicorn, the most commonly recommended WSGI server for Flask applications:</p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash"># Installation
+pip install gunicorn
+
+# Basic usage (4 worker processes, binding to localhost:8000)
+gunicorn -w 4 -b 127.0.0.1:8000 "app:create_app()"
+
+# Advanced usage with configuration file
+# Create gunicorn_config.py:
+</code></pre>
+            </div>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># gunicorn_config.py
+import multiprocessing
+import os
+
+# Worker configuration
+# A good starting point is (2 * num_cores) + 1
+workers = multiprocessing.cpu_count() * 2 + 1
+worker_class = 'gevent'  # Options: sync, gevent, eventlet, etc.
+threads = 2  # Number of threads per worker
+
+# Binding
+bind = "0.0.0.0:8000"
+
+# Logging
+accesslog = "logs/access.log"
+errorlog = "logs/error.log"
+loglevel = "info"
+
+# Security
+limit_request_line = 4096
+limit_request_fields = 100
+limit_request_field_size = 8190
+
+# Performance tuning
+keepalive = 5  # Seconds to wait for requests on a Keep-Alive connection
+timeout = 60  # Seconds to wait for a worker to finish handling a request
+graceful_timeout = 30  # Seconds to wait before forcefully killing workers
+max_requests = 1000  # Restart workers after this many requests
+max_requests_jitter = 50  # Add randomness to max_requests
+
+# Process naming
+proc_name = "flask_app"
+
+# Server hooks
+def on_starting(server):
+    """Log when the server starts."""
+    server.log.info("Starting Gunicorn server with %s workers", workers)
+
+def post_fork(server, worker):
+    """Code to run after a worker has been forked."""
+    server.log.info("Worker spawned (pid: %s)", worker.pid)
+
+def worker_exit(server, worker):
+    """Log when a worker exits."""
+    server.log.info("Worker exited (pid: %s)", worker.pid)</code></pre>
+            </div>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash"># Run Gunicorn with the configuration file
+gunicorn -c gunicorn_config.py "app:create_app('production')"</code></pre>
+            </div>
+            
+            <div class="alert alert-info mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <h3 class="font-bold">Determining Optimal Worker Count</h3>
+                    <p>The ideal number of Gunicorn workers depends on:</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li><strong>CPU-bound applications:</strong> (2 × CPU cores) + 1</li>
+                        <li><strong>I/O-bound applications:</strong> Can use more workers (3-4 × CPU cores)</li>
+                        <li><strong>Memory constraints:</strong> Monitor memory usage and adjust accordingly</li>
+                    </ul>
+                    <p class="mt-2">Always test your specific application under load to determine optimal settings.</p>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <h3 id="dependencies" class="text-xl font-semibold text-secondary mb-2">1.3 Dependency Management</h3>
+            <p class="mb-2">
+                Consistent dependency management is crucial for reliable production deployments. Flask applications should implement deterministic dependency installation to ensure reproducible builds.
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash"># Generate a requirements.txt with exact versions
+pip freeze > requirements.txt
+
+# Modern approach: Use pip-tools for better dependency management
+pip install pip-tools
+
+# Create a requirements.in file with high-level dependencies
+# requirements.in
+# flask==2.0.1
+# flask-sqlalchemy
+# gunicorn>=20.1.0
+# python-dotenv>=0.19.0
+
+# Compile concrete requirements with all transitive dependencies
+pip-compile requirements.in
+
+# Install exact versions
+pip-sync</code></pre>
+            </div>
+            
+            <p class="mt-4 mb-2">A more modern approach is to use Poetry for dependency management:</p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash"># Install Poetry
+pip install poetry
+
+# Initialize a new project or convert existing one
+poetry init
+
+# Add dependencies with version constraints
+poetry add flask
+poetry add gunicorn --group production
+poetry add pytest pytest-flask --group dev
+
+# Generate a requirements.txt for traditional deployments
+poetry export -f requirements.txt --output requirements.txt --without-hashes</code></pre>
+            </div>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-toml"># Example pyproject.toml with Poetry
+[tool.poetry]
+name = "flask-application"
+version = "0.1.0"
+description = "A Flask web application"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+flask = "^2.0.1"
+flask-sqlalchemy = "^2.5.1"
+python-dotenv = "^0.19.0"
+marshmallow = "^3.13.0"
+
+[tool.poetry.group.production.dependencies]
+gunicorn = "^20.1.0"
+psycopg2-binary = "^2.9.1"
+sentry-sdk = {extras = ["flask"], version = "^1.3.1"}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^6.2.5"
+pytest-flask = "^1.2.0"
+black = "^21.8b0"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"</code></pre>
+            </div>
+            
+            <div class="alert alert-warning mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <h3 class="font-bold">Production Dependency Security</h3>
+                    <p>Always scan your dependencies for security vulnerabilities before deploying to production:</p>
+                    <div class="mockup-code mt-2 mb-2">
+                        <pre><code class="language-bash"># Using Safety
+pip install safety
+safety check -r requirements.txt
+
+# Using Snyk
+pip install snyk
+snyk test
+
+# Automatically upgrade dependencies with Poetry
+poetry update --dry-run</code></pre>
+                    </div>
+                    <p>Set up automated dependency scanning in your CI/CD pipeline to catch vulnerabilities early.</p>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">1.4 Static Files Optimization</h3>
+            <p class="mb-2">
+                In production, static files (CSS, JavaScript, images) should be optimized for performance and served efficiently, preferably from a dedicated static file server or CDN.
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># Configure static files for production
+# In your app/__init__.py
+
+def create_app(config_name=None):
+    # ... other setup code ...
+    
+    # Configure static files
+    if not app.debug and not app.testing:
+        # Set cache control headers for static files
+        @app.after_request
+        def add_cache_headers(response):
+            # Cache static files for 1 year (immutable content should have versioned URLs)
+            if request.path.startswith('/static/'):
+                response.cache_control.max_age = 31536000  # 1 year
+                response.cache_control.public = True
+                response.cache_control.immutable = True
+            return response</code></pre>
+            </div>
+            
+            <p class="mt-4 mb-2">For asset compilation and bundling, consider integrating tools like Webpack or Flask-Assets:</p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># Using Flask-Assets for asset bundling
+from flask_assets import Environment, Bundle
+
+def create_app():
+    app = Flask(__name__)
+    # ... other setup code ...
+    
+    # Initialize Flask-Assets
+    assets = Environment(app)
+    assets.debug = app.debug
+    
+    # Define bundles
+    css_bundle = Bundle(
+        'css/normalize.css',
+        'css/main.css',
+        filters='cssmin',
+        output='dist/css/bundle.min.css'
+    )
+    
+    js_bundle = Bundle(
+        'js/vendor/jquery.js',
+        'js/main.js',
+        filters='jsmin',
+        output='dist/js/bundle.min.js'
+    )
+    
+    # Register bundles
+    assets.register('css_all', css_bundle)
+    assets.register('js_all', js_bundle)</code></pre>
+            </div>
+            
+            <div class="alert alert-info mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <h3 class="font-bold">CDN Integration</h3>
+                    <p>For production applications, consider using a Content Delivery Network (CDN) for static assets:</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li><strong><a href="https://www.cloudflare.com/" target="_blank" class="link link-primary">Cloudflare</a>:</strong> Free tier available, easy integration</li>
+                        <li><strong><a href="https://aws.amazon.com/cloudfront/" target="_blank" class="link link-primary">AWS CloudFront</a>:</strong> Global CDN with edge locations worldwide</li>
+                        <li><strong><a href="https://www.fastly.com/" target="_blank" class="link link-primary">Fastly</a>:</strong> High-performance CDN with real-time purging</li>
+                    </ul>
+                    <p class="mt-2">A proper CDN setup can significantly improve load times and reduce server load.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- DEPLOYMENT OPTIONS -->
+    <div id="deployment-options" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">2. Deployment Options</h2>
+            <p class="text-lg mb-4">
+                Several options are available for deploying your Flask application. Each has its advantages and disadvantages.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- PaaS -->
+                <div id="paas" class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title">Platform-as-a-Service (PaaS)</h3>
+                        <p><strong>Examples:</strong> Heroku, Render, PythonAnywhere, Google App Engine</p>
+                        <p><strong>Advantages:</strong> Simple setup, automatic scaling, reduced maintenance</p>
+                        <p><strong>Disadvantages:</strong> Potentially high cost at scale, limited customization options</p>
+                        <p><strong>Ideal for:</strong> Small to medium projects, startups, prototypes</p>
+                    </div>
+                </div>
+                
+                <!-- VPS -->
+                <div id="vps" class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title">Virtual Private Server (VPS)</h3>
+                        <p><strong>Examples:</strong> DigitalOcean, Linode, AWS EC2, OVH</p>
+                        <p><strong>Advantages:</strong> Full control, advanced customization, predictable cost</p>
+                        <p><strong>Disadvantages:</strong> Manual configuration, required maintenance, security management</p>
+                        <p><strong>Ideal for:</strong> Complex applications, specific needs, teams with DevOps expertise</p>
+                    </div>
+                </div>
+                
+                <!-- Containers -->
+                <div id="containers" class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title">Containers</h3>
+                        <p><strong>Examples:</strong> Docker + Kubernetes, AWS ECS, Google Cloud Run</p>
+                        <p><strong>Advantages:</strong> Portability, isolation, easy horizontal scaling</p>
+                        <p><strong>Disadvantages:</strong> Learning curve, operational complexity</p>
+                        <p><strong>Ideal for:</strong> Distributed applications, microservices, DevOps teams</p>
+                    </div>
+                </div>
+                
+                <!-- Serverless -->
+                <div id="serverless" class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title">Serverless</h3>
+                        <p><strong>Examples:</strong> AWS Lambda + API Gateway, Google Cloud Functions</p>
+                        <p><strong>Advantages:</strong> Automatic scaling, pay-per-use, zero infrastructure maintenance</p>
+                        <p><strong>Disadvantages:</strong> Cold starts, execution time limits, required adaptation</p>
+                        <p><strong>Ideal for:</strong> APIs, specific functions, variable workloads</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- DEPLOYMENT STEPS (HEROKU) -->
+    <div id="deployment-steps" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">3. Deployment on Heroku (PaaS)</h2>
+            <p class="text-lg mb-4">
+                Heroku is one of the simplest solutions for deploying a Flask application. Follow these steps:
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Prerequisites</h3>
+            <ul class="mb-4 list-disc ml-6">
+                <li>A Heroku account</li>
+                <li>Heroku CLI installed locally</li>
+                <li>Git installed and project initialized</li>
+            </ul>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Required Files</h3>
+            <ol class="mb-4 list-decimal ml-6">
+                <li><strong>requirements.txt</strong> - List of dependencies</li>
+                <li><strong>Procfile</strong> - Startup instructions</li>
+                <li><strong>runtime.txt</strong> - Python version (optional)</li>
+            </ol>
+            
+            <h3 id="heroku-deploy" class="text-xl font-semibold text-secondary mb-2">Deployment Steps</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash"># Login to Heroku
+heroku login
+
+# Create a Heroku application
+heroku create your-app-name
+
+# Configure environment variables
+heroku config:set SECRET_KEY="your-very-long-and-random-secret-key"
+heroku config:set FLASK_ENV="production"
+
+# For applications using a database
+heroku addons:create heroku-postgresql:hobby-dev
+
+# Deploy the application
+git push heroku main
+
+# Open the application in the browser
+heroku open</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Maintaining the Application</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash"># View logs in real-time
+heroku logs --tail
+
+# Run commands (e.g., database migrations)
+heroku run python -m flask db upgrade
+
+# Scaling
+heroku ps:scale web=2  # Increase to 2 dynos</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <!-- DEPLOYMENT STEPS (VPS) -->
+    <div id="vps-deploy" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">4. Deployment on a VPS</h2>
+            <p class="text-lg mb-4">
+                Deploying on a VPS offers more control but requires more configuration.
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Typical Deployment Stack</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-text">Client -> Nginx (Web Server / Reverse Proxy) -> Gunicorn -> Flask Application</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Nginx Configuration</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-nginx"># /etc/nginx/sites-available/your-app
+server {
+    listen 80;
+    server_name your-domain.com www.your-domain.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    
+    location /static {
+        alias /path/to/your-app/static;
+    }
+}
+
+# Enable the site
+# sudo ln -s /etc/nginx/sites-available/your-app /etc/nginx/sites-enabled
+# sudo systemctl restart nginx</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Systemd Service</h3>
+            <p class="mb-2">To make your application start automatically:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash"># /etc/systemd/system/your-app.service
+[Unit]
+Description=Gunicorn instance for your Flask application
+After=network.target
+
+[Service]
+User=your-user
+WorkingDirectory=/path/to/your-app
+Environment="PATH=/path/to/your-app/venv/bin"
+Environment="FLASK_ENV=production"
+Environment="DATABASE_URL=mysql://user:password@localhost/db"
+ExecStart=/path/to/your-app/venv/bin/gunicorn -w 4 -b 127.0.0.1:8000 "app:create_app()"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Enable the Service</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash">sudo systemctl start your-app
+sudo systemctl enable your-app
+sudo systemctl status your-app</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Secure with HTTPS</h3>
+            <p class="mb-2">Use Certbot to configure HTTPS for free with Let's Encrypt:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash">sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d your-domain.com -d www.your-domain.com</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <!-- DOCKER DEPLOYMENT -->
+    <div id="docker-deploy" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">5. Deployment with Docker</h2>
+            <p class="text-lg mb-4">
+                Docker simplifies deployment by encapsulating your application and its dependencies in containers.
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Dockerfile</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-dockerfile"># Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+ENV FLASK_APP=app
+ENV FLASK_ENV=production
+
+EXPOSE 5000
+
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:create_app()"]</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Docker Compose (with Database)</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-yaml"># docker-compose.yml
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/flask_db
+      - SECRET_KEY=your-secret-key
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=flask_db
+
+volumes:
+  postgres_data:</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Build and Deployment</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash"># Build and start containers
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop containers
+docker-compose down</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <!-- BEST PRACTICES -->
+    <div id="security" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">6. Deployment Best Practices</h2>
+            <p class="text-lg mb-4">
+                Regardless of the method chosen, these practices will help maintain a stable and secure application.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <h3 class="text-xl font-semibold text-secondary mb-2">Security</h3>
+                    <ul class="list-disc ml-6">
+                        <li>Enable HTTPS for all traffic</li>
+                        <li>Store secrets in environment variables</li>
+                        <li>Use a WAF (Web Application Firewall)</li>
+                        <li>Regularly update dependencies</li>
+                        <li>Implement security headers (CSP, HSTS)</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 id="scaling" class="text-xl font-semibold text-secondary mb-2">Performance</h3>
+                    <ul class="list-disc ml-6">
+                        <li>Use a CDN for static assets</li>
+                        <li>Implement appropriate caching</li>
+                        <li>Use database connection pooling</li>
+                        <li>Optimize database queries</li>
+                        <li>Consider using an asynchronous worker (Celery)</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 id="monitoring" class="text-xl font-semibold text-secondary mb-2">Monitoring</h3>
+                    <ul class="list-disc ml-6">
+                        <li>Set up structured logging</li>
+                        <li>Use a monitoring service (New Relic, Datadog)</li>
+                        <li>Configure alerts for error spikes</li>
+                        <li>Track performance metrics</li>
+                        <li>Implement Health Checks</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 id="ci-cd" class="text-xl font-semibold text-secondary mb-2">CI/CD</h3>
+                    <ul class="list-disc ml-6">
+                        <li>Automate tests before deployment</li>
+                        <li>Use staging environments</li>
+                        <li>Implement blue/green or canary deployment</li>
+                        <li>Maintain a rollback strategy</li>
+                        <li>Document the deployment process</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="alert alert-success mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <div>
+                    <h3 class="font-bold">Pro Tip!</h3>
+                    <div>Start simple and evolve according to your needs. A well-designed application can be migrated between different deployment options as it grows.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- DEBUGGING COMMON ISSUES -->
+    <div id="troubleshooting" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">7. Troubleshooting Common Issues</h2>
+            <p class="text-lg mb-4">
+                Quickly identify and resolve common problems when deploying Flask applications.
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th>Problem</th>
+                            <th>Possible Cause</th>
+                            <th>Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Application Error (H10) on Heroku</td>
+                            <td>Error when starting the application</td>
+                            <td>Check logs with <code>heroku logs --tail</code>, fix the Procfile or application errors</td>
+                        </tr>
+                        <tr>
+                            <td>500 Internal Server Error</td>
+                            <td>Unhandled exception in the application</td>
+                            <td>Temporarily enable DEBUG=True, check logs, and implement appropriate error handling</td>
+                        </tr>
+                        <tr>
+                            <td>Database inaccessible</td>
+                            <td>Bad connection configuration or unmigrated database</td>
+                            <td>Check environment variables, apply migrations, verify permissions</td>
+                        </tr>
+                        <tr>
+                            <td>Static content not loading</td>
+                            <td>Misconfigured web server or Flask</td>
+                            <td>Properly configure static file handling in Nginx or Flask</td>
+                        </tr>
+                        <tr>
+                            <td>Slow performance</td>
+                            <td>Inefficient resource usage or undersized server</td>
+                            <td>Profile the application, optimize queries, add caching, increase resources</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- EXTERNAL RESOURCES -->
+    <div id="resources" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">8. External Resources</h2>
+            <p class="text-lg mb-4">
+                This curated collection of external resources will help you expand your knowledge and solve specific deployment challenges. These resources are organized by category for easy reference.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Official Documentation -->
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl text-primary">Official Documentation</h3>
+                        <ul class="list-disc ml-6 space-y-2">
+                            <li><a href="https://flask.palletsprojects.com/en/2.3.x/deploying/" target="_blank" class="link link-primary">Flask Deployment Options</a> - Official Flask documentation on deployment</li>
+                            <li><a href="https://werkzeug.palletsprojects.com/en/2.3.x/" target="_blank" class="link link-primary">Werkzeug WSGI Library</a> - Documentation for the WSGI library that Flask is built on</li>
+                            <li><a href="https://gunicorn.org/#docs" target="_blank" class="link link-primary">Gunicorn Documentation</a> - Comprehensive guide to the Gunicorn WSGI server</li>
+                            <li><a href="https://uwsgi-docs.readthedocs.io/en/latest/" target="_blank" class="link link-primary">uWSGI Documentation</a> - Detailed guide to the uWSGI application server</li>
+                            <li><a href="https://nginx.org/en/docs/" target="_blank" class="link link-primary">Nginx Documentation</a> - Official documentation for the Nginx web server</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Deployment Platforms -->
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl text-primary">Deployment Platforms</h3>
+                        <ul class="list-disc ml-6 space-y-2">
+                            <li><a href="https://devcenter.heroku.com/categories/python-support" target="_blank" class="link link-primary">Heroku Python Support</a> - Heroku's official guide to Python app deployment</li>
+                            <li><a href="https://docs.digitalocean.com/tutorials/app-deploy-flask-app/" target="_blank" class="link link-primary">DigitalOcean App Platform</a> - Deploying Flask apps on DigitalOcean</li>
+                            <li><a href="https://aws.amazon.com/getting-started/hands-on/deploy-python-application/" target="_blank" class="link link-primary">AWS Elastic Beanstalk</a> - Deploying Python apps on AWS</li>
+                            <li><a href="https://cloud.google.com/appengine/docs/standard/python3/building-app" target="_blank" class="link link-primary">Google App Engine</a> - Deploying Python apps on Google Cloud</li>
+                            <li><a href="https://docs.microsoft.com/en-us/azure/app-service/quickstart-python" target="_blank" class="link link-primary">Azure App Service</a> - Deploying Python apps on Microsoft Azure</li>
+                            <li><a href="https://www.pythonanywhere.com/wiki/Flask" target="_blank" class="link link-primary">PythonAnywhere</a> - Simplified Flask deployment on PythonAnywhere</li>
+                            <li><a href="https://render.com/docs/deploy-flask" target="_blank" class="link link-primary">Render</a> - Deploying Flask applications on Render</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Containerization & Orchestration -->
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl text-primary">Containerization & Orchestration</h3>
+                        <ul class="list-disc ml-6 space-y-2">
+                            <li><a href="https://docs.docker.com/language/python/build-images/" target="_blank" class="link link-primary">Docker Python Guide</a> - Official guide to containerizing Python applications</li>
+                            <li><a href="https://kubernetes.io/docs/tutorials/stateless-application/guestbook/" target="_blank" class="link link-primary">Kubernetes Basics</a> - Introduction to Kubernetes deployments</li>
+                            <li><a href="https://docs.docker.com/compose/gettingstarted/" target="_blank" class="link link-primary">Docker Compose</a> - Using Docker Compose for multi-container environments</li>
+                            <li><a href="https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/" target="_blank" class="link link-primary">TestDriven.io Docker Guide</a> - Comprehensive guide to Dockerizing Flask apps</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Security Resources -->
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl text-primary">Security Resources</h3>
+                        <ul class="list-disc ml-6 space-y-2">
+                            <li><a href="https://owasp.org/www-project-top-ten/" target="_blank" class="link link-primary">OWASP Top 10</a> - Critical web application security risks</li>
+                            <li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Flask_Security_Cheat_Sheet.html" target="_blank" class="link link-primary">OWASP Flask Security Cheat Sheet</a> - Specific security guidelines for Flask</li>
+                            <li><a href="https://letsencrypt.org/getting-started/" target="_blank" class="link link-primary">Let's Encrypt</a> - Free, automated SSL certificates</li>
+                            <li><a href="https://docs.flask.palletsprojects.com/en/2.3.x/security/" target="_blank" class="link link-primary">Flask Security Considerations</a> - Official Flask security documentation</li>
+                            <li><a href="https://pyup.io/" target="_blank" class="link link-primary">PyUp.io</a> - Security and dependency management for Python</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Monitoring & Logging -->
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl text-primary">Monitoring & Logging</h3>
+                        <ul class="list-disc ml-6 space-y-2">
+                            <li><a href="https://docs.sentry.io/platforms/python/guides/flask/" target="_blank" class="link link-primary">Sentry for Flask</a> - Error tracking and performance monitoring</li>
+                            <li><a href="https://newrelic.com/python" target="_blank" class="link link-primary">New Relic</a> - Application performance monitoring</li>
+                            <li><a href="https://prometheus.io/docs/introduction/overview/" target="_blank" class="link link-primary">Prometheus</a> - Monitoring system and time series database</li>
+                            <li><a href="https://grafana.com/tutorials/grafana-fundamentals/" target="_blank" class="link link-primary">Grafana</a> - Analytics and interactive visualization</li>
+                            <li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html" target="_blank" class="link link-primary">ELK Stack</a> - Elasticsearch, Logstash, and Kibana for logging</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- CI/CD & DevOps -->
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="card-title text-xl text-primary">CI/CD & DevOps</h3>
+                        <ul class="list-disc ml-6 space-y-2">
+                            <li><a href="https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python" target="_blank" class="link link-primary">GitHub Actions for Python</a> - CI/CD workflows with GitHub</li>
+                            <li><a href="https://docs.gitlab.com/ee/ci/examples/python.html" target="_blank" class="link link-primary">GitLab CI/CD for Python</a> - CI/CD workflows with GitLab</li>
+                            <li><a href="https://circleci.com/docs/language-python/" target="_blank" class="link link-primary">CircleCI for Python</a> - CI/CD pipelines with CircleCI</li>
+                            <li><a href="https://jenkins.io/doc/tutorials/build-a-python-app-with-jenkins/" target="_blank" class="link link-primary">Jenkins for Python</a> - Building Python apps with Jenkins</li>
+                            <li><a href="https://terraform.io/docs/providers/aws/index.html" target="_blank" class="link link-primary">Terraform</a> - Infrastructure as Code</li>
+                            <li><a href="https://www.ansible.com/integrations/infrastructure/aws" target="_blank" class="link link-primary">Ansible</a> - Configuration management and automation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tutorials and Guides -->
+            <h3 class="text-xl font-semibold text-secondary mb-2">Comprehensive Tutorials and Guides</h3>
+            <div class="overflow-x-auto">
+                <table class="table table-compact w-full">
+                    <thead>
+                        <tr>
+                            <th>Resource</th>
+                            <th>Description</th>
+                            <th>Difficulty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xvii-deployment-on-linux" target="_blank" class="link link-primary">Flask Mega-Tutorial: Deployment</a></td>
+                            <td>Miguel Grinberg's comprehensive guide to deploying Flask applications</td>
+                            <td>Intermediate</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://testdriven.io/courses/docker-swarm-traefik/" target="_blank" class="link link-primary">Docker Swarm with Traefik</a></td>
+                            <td>Detailed guide to setting up Flask with Docker Swarm and Traefik</td>
+                            <td>Advanced</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-20-04" target="_blank" class="link link-primary">DigitalOcean Flask + Nginx + Gunicorn</a></td>
+                            <td>Step-by-step guide to deploying Flask with Nginx and Gunicorn</td>
+                            <td>Intermediate</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://realpython.com/flask-by-example-part-1-project-setup/" target="_blank" class="link link-primary">Flask by Example</a></td>
+                            <td>Multi-part tutorial covering Flask development and deployment</td>
+                            <td>Beginner to Intermediate</td>
+                        </tr>
+                        <tr>
+                            <td><a href="https://www.fullstackpython.com/deployment.html" target="_blank" class="link link-primary">Full Stack Python: Deployment</a></td>
+                            <td>Comprehensive overview of Python web application deployment</td>
+                            <td>Intermediate</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Books and Publications -->
+            <h3 class="text-xl font-semibold text-secondary mt-6 mb-2">Books and Publications</h3>
+            <ul class="list-disc ml-6 space-y-2">
+                <li><strong><a href="https://www.oreilly.com/library/view/flask-web-development/9781491991725/" target="_blank" class="link link-primary">Flask Web Development</a></strong> by Miguel Grinberg - Comprehensive guide to Flask with a chapter on deployment</li>
+                <li><strong><a href="https://www.packtpub.com/product/mastering-flask-web-development-second-edition/9781788995405" target="_blank" class="link link-primary">Mastering Flask Web Development</a></strong> by Daniel Gaspar - Advanced Flask concepts including deployment strategies</li>
+                <li><strong><a href="https://www.oreilly.com/library/view/python-for-devops/9781492057680/" target="_blank" class="link link-primary">Python for DevOps</a></strong> by Noah Gift, et al. - Python-specific DevOps practices</li>
+                <li><strong><a href="https://www.oreilly.com/library/view/building-web-applications/9781491938041/" target="_blank" class="link link-primary">Building Web Applications with Flask</a></strong> by Italo Maia - Practical guide to building and deploying Flask applications</li>
+            </ul>
+            
+            <div class="alert alert-info mt-6">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <h3 class="font-bold">Resource Contribution</h3>
+                    <p>Have a valuable resource that should be included here? Please <a href="{{ url_for('main.contribute') }}" class="link link-primary">contact us</a> with your suggestion!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CONCLUSION -->
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Conclusion</h2>
+            <p class="text-lg">
+                Deploying a Flask application requires planning and attention to detail, but the options 
+                available today make this process more accessible than ever. Whether you choose a simple PaaS 
+                platform like Heroku, a configurable VPS, or a container-based approach, the key is to understand 
+                the specific needs of your application and the trade-offs of each solution.
+            </p>
+            <p class="text-lg mt-2">
+                Remember that deployment is not a final step, but the beginning of a cycle of maintenance, 
+                monitoring, and continuous improvement. Start simple, iterate often, and adapt your infrastructure 
+                as your application evolves.
+            </p>
+            <div class="mt-4 text-sm text-gray-400">Last updated: April 2025</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

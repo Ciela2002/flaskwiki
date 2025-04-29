@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="prose prose-lg max-w-none">
+    <h1 class="text-4xl font-bold text-primary mb-6">Flask Wiki Index</h1>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Learning Path</h2>
+            <p class="text-lg mb-4">
+                Welcome to the Flask Wiki learning resources. Below you'll find a comprehensive collection of tutorials, guides, and resources to help you master Flask development. We recommend following the learning path for beginners, but feel free to jump to any topic that interests you.
+            </p>
+        </div>
+    </div>
+    
+    <div class="divider">Getting Started</div>
+    
+    {% if device_type == 'mobile' %}
+    <!-- Mobile-optimized grid layout -->
+    <div class="grid grid-cols-1 gap-4 mb-6">
+    {% else %}
+    <!-- Desktop grid layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    {% endif %}
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">Introduction to Flask</h3>
+                <p>Learn what Flask is, why it's popular, and its key features.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.introduction') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">Project Structure</h3>
+                <p>Understand the recommended directory structure for Flask applications.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.project_structure') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">Templates Basics</h3>
+                <p>Learn how to use Jinja2 templates to create dynamic HTML pages.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.templates_basics') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="divider">Styling & Frontend</div>
+    
+    {% if device_type == 'mobile' %}
+    <!-- Mobile-optimized grid layout -->
+    <div class="grid grid-cols-1 gap-4 mb-6">
+    {% else %}
+    <!-- Desktop grid layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    {% endif %}
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">CSS Integration</h3>
+                <p>Learn how to integrate CSS frameworks and custom styles in your Flask app.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.css_integration') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">Static Files</h3>
+                <p>How to serve static files like CSS, JavaScript, and images in Flask.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.static_files') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">JavaScript in Flask</h3>
+                <p>Adding interactivity to your Flask applications with JavaScript.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.javascript_in_flask') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="divider">Data & Backend</div>
+    
+    {% if device_type == 'mobile' %}
+    <!-- Mobile-optimized grid layout -->
+    <div class="grid grid-cols-1 gap-4 mb-6">
+    {% else %}
+    <!-- Desktop grid layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    {% endif %}
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">Database Integration</h3>
+                <p>Connect your Flask application to databases using SQLAlchemy.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.database_integration') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">Forms & Validation</h3>
+                <p>Create and validate forms in Flask applications.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.forms_validation') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">User Authentication</h3>
+                <p>Implement user login, registration, and authentication in Flask.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.user_authentication') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="divider">Advanced Topics</div>
+    
+    {% if device_type == 'mobile' %}
+    <!-- Mobile-optimized grid layout -->
+    <div class="grid grid-cols-1 gap-4 mb-6">
+    {% else %}
+    <!-- Desktop grid layout -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    {% endif %}
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">RESTful APIs</h3>
+                <p>Build RESTful APIs with Flask for your web and mobile applications.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.restful_apis') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">Blueprints</h3>
+                <p>Organize your Flask application with Blueprints for better scalability.</p>
+                <div class="card-actions justify-end mt-4">
+                    <span class="badge badge-outline">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-lg hover:shadow-xl transition-shadow">
+            <div class="card-body">
+                <h3 class="card-title text-xl text-primary">Deployment</h3>
+                <p>Learn how to deploy your Flask application to production servers.</p>
+                <div class="card-actions justify-end mt-4">
+                    <a href="{{ url_for('main.deployment_guide') }}" class="btn btn-primary btn-sm">Read</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alert alert-info shadow-lg mb-8">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <h3 class="font-bold">Contribute to Flask Wiki</h3>
+                <div class="text-sm">We're constantly adding new tutorials and resources. If you'd like to contribute, please <a href="{{ url_for('main.contribute') }}" class="link link-primary">contact us</a>!</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

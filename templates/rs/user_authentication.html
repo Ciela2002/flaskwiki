@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="prose dark:prose-invert max-w-none">
+        <h1 class="text-3xl font-bold text-primary mb-6">User Authentication in Flask</h1>
+        <p class="lead mb-6">
+            Authentication is a critical aspect of most web applications, allowing users to create accounts, log in, and access protected resources.
+            This guide covers implementing user authentication in Flask applications using Flask-Login and best security practices.
+        </p>
+        <div class="alert alert-info mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <div class="font-bold">Important</div>
+                <div>Authentication and security are complex topics. This guide covers the basics, but for production applications, consider using established libraries and frameworks, and always follow the latest security best practices.</div>
+            </div>
+        </div>
+    </div>
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Getting Started with Flask-Login</h2>
+            <p class="mb-4">Flask-Login is a popular extension that provides user session management for Flask. It handles logging in, logging out, and remembering users' sessions.</p>
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Installation</h3>
+            <p class="mb-2">Install Flask-Login using pip:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash">pip install flask-login</code></pre>
+            </div>
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Basic Setup</h3>
+            <p class="mb-2">Configure Flask-Login in your application:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># In your app.py or __init__.py file
+from flask import Flask
+from flask_login import LoginManager
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key'  # Required for session security
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'  # Specify the login view route
+login_manager.login_message_category = 'info'  # Optional: flash message category
+</code></pre>
+            </div>
+            <h3 class="text-xl font-semibold text-secondary mb-2">3. User Model</h3>
+            <p class="mb-2">Create a User model that implements the required Flask-Login methods:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># models.py
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from . import db  # Assuming you're using a database (e.g., SQLAlchemy)
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(120), unique=True, index=True)
+    password_hash = db.Column(db.String(128))
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+# Load user callback for Flask-Login
+from . import login_manager
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Implementing Authentication Routes</h2>
+            <p class="text-lg mb-4">
+                Now let's implement the routes for user registration, login, and logout.
+            </p>
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Form Classes</h3>
+            <p class="mb-2">Create forms for registration and login:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># forms.py
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from .models import User
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

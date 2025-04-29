@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="prose dark:prose-invert max-w-none">
+        <h1 class="text-3xl font-bold text-primary mb-6">Forms & Validation in Flask</h1>
+        <p class="lead mb-6">
+            Forms are a fundamental part of web applications, allowing users to submit data to your application. 
+            This guide covers how to create, validate, and process forms in Flask applications.
+        </p>
+        <div class="alert alert-info mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <div class="font-bold">Important</div>
+                <div>Always validate form data on both the client and server side. Client-side validation provides immediate feedback, but server-side validation is essential for security.</div>
+            </div>
+        </div>
+    </div>
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Introduction to Flask-WTF</h2>
+            <p class="mb-4">Flask-WTF is a Flask extension that integrates WTForms, making it easy to create and validate forms in Flask applications.</p>
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Installation</h3>
+            <p class="mb-2">Install Flask-WTF using pip:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash">pip install Flask-WTF</code></pre>
+            </div>
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Basic Configuration</h3>
+            <p class="mb-2">Configure Flask-WTF in your application:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># In your app.py or __init__.py file
+from flask import Flask
+from flask_wtf.csrf import CSRFProtect
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key'  # Required for CSRF protection
+csrf = CSRFProtect(app)  # Enable CSRF protection globally
+</code></pre>
+            </div>
+            <h3 class="text-xl font-semibold text-secondary mb-2">3. Creating a Simple Form</h3>
+            <p class="mb-2">Define a form class in a separate file (e.g., forms.py):</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># forms.py
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SubmitField
+from wtforms.validators import DataRequired, Email, Length
+
+class ContactForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=50)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    message = TextAreaField('Message', validators=[DataRequired(), Length(min=10, max=500)])
+    submit = SubmitField('Send Message')
+</code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Displaying Forms in Templates</h2>
+            <p class="text-lg mb-4">
+                Once you've defined your forms, you need to display them in your templates. Here's how to render forms in Jinja2 templates:
+            </p>
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Form Template</h3>
+            <p class="mb-2">Create a template to render your form:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/contact.html --&gt;
+{% extends 'base.html' %}
+{% block content %}
+    &lt;h1&gt;Contact Us&lt;/h1&gt;
+    &lt;form method="POST" action="{{ url_for('contact') }}"&gt;
+        {{ form.csrf_token }}
+        &lt;div class="form-group"&gt;
+            {{ form.name.label }}
+            {{ form.name(class="form-control") }}
+            {% if form.name.errors %}
+                &lt;div class="text-danger"&gt;
+                    {% for error in form.name.errors %}
+                        {{ error }}
+                    {% endfor %}
+                &lt;/div&gt;
+            {% endif %}
+        &lt;/div&gt;
+        &lt;div class="form-group"&gt;
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
+            {% if form.email.errors %}
+                &lt;div class="text-danger"&gt;
+                    {% for error in form.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                &lt;/div&gt;
+            {% endif %}
+        &lt;/div&gt;
+        &lt;div class="form-group"&gt;
+            {{ form.message.label }}
+            {{ form.message(class="form-control") }}
+            {% if form.message.errors %}
+                &lt;div class="text-danger"&gt;
+                    {% for error in form.message.errors %}
+                        {{ error }}
+                    {% endfor %}
+                &lt;/div&gt;
+            {% endif %}
+        &lt;/div&gt;
+        &lt;button type="submit" class="btn btn-primary"&gt;Send&lt;/button&gt;
+    &lt;/form&gt;
+{% endblock %}{% endraw %}
+</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

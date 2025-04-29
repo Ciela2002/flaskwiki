@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="prose prose-lg max-w-none">
+    <h1 class="text-4xl font-bold text-primary mb-6">Database Integration in Flask</h1>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Introduction to Databases in Flask</h2>
+            <p class="text-lg">
+                Most web applications need to store and retrieve data, making database integration a crucial aspect of Flask development. Flask doesn't come with built-in database support, but it's designed to be easily integrated with various database solutions.
+            </p>
+            <p class="text-lg">
+                In this tutorial, we'll focus on using SQLAlchemy with Flask, which is the most popular approach for database integration in Flask applications.
+            </p>
+        </div>
+    </div>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Database Options for Flask</h2>
+            <p class="text-lg mb-4">
+                Flask can work with various database systems, each with its own strengths:
+            </p>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Database Type</th>
+                            <th>Popular Options</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">Relational (SQL)</td>
+                            <td>PostgreSQL, MySQL, SQLite</td>
+                            <td>Structured data with relationships, ACID compliance</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">NoSQL Document</td>
+                            <td>MongoDB, CouchDB</td>
+                            <td>Flexible schema, document-oriented data</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Key-Value</td>
+                            <td>Redis, DynamoDB</td>
+                            <td>Caching, simple data structures, high performance</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Graph</td>
+                            <td>Neo4j</td>
+                            <td>Highly connected data, complex relationships</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-lg mt-4">
+                For most Flask applications, especially when starting out, a relational database like SQLite (for development) or PostgreSQL (for production) is a good choice.
+            </p>
+        </div>
+    </div>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Flask-SQLAlchemy</h2>
+            <p class="text-lg mb-4">
+                Flask-SQLAlchemy is an extension that adds support for SQLAlchemy to your Flask application. SQLAlchemy is a powerful ORM (Object Relational Mapper) that allows you to interact with your database using Python objects instead of writing raw SQL.
+            </p>
+            <h3 class="text-xl font-semibold text-secondary mb-2">Installation</h3>
+            <div class="mockup-code mb-4">
+                <pre><code>pip install Flask-SQLAlchemy</code></pre>
+            </div>
+            <h3 class="text-xl font-semibold text-secondary mb-2">Basic Configuration</h3>
+            <div class="mockup-code mb-4">
+                <pre><code># In your config.py
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+class Config:
+    # SQLite database for development
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# In your app/__init__.py
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from config import Config
+
+db = SQLAlchemy()
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    db.init_app(app)</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

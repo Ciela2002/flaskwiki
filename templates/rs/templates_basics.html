@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="prose prose-lg max-w-none">
+    <h1 class="text-4xl font-bold text-primary mb-6">Flask Templates Basics</h1>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Introduction to Flask Templates</h2>
+            <p class="text-lg">
+                Templates are a crucial part of Flask applications, allowing you to separate your Python code (backend logic) from your HTML (frontend presentation). Flask uses the Jinja2 templating engine by default, which provides powerful features for generating dynamic HTML content.
+            </p>
+            <p class="text-lg">
+                In this tutorial, we'll explore the basics of using templates in Flask, from simple variable substitution to more complex template inheritance and macros.
+            </p>
+        </div>
+    </div>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Basic Template Usage</h2>
+            <p class="text-lg mb-4">
+                Templates in Flask are stored in the <code>templates</code> directory of your application. Here's how to render a simple template:
+            </p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># In your Flask route
+from flask import render_template
+
+@app.route('/')
+def index():
+    return render_template('index.html', title='Home Page', user='John')</code></pre>
+            </div>
+            <p class="text-lg mb-4">
+                And here's what your template might look like:
+            </p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">&lt;!-- templates/index.html --&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;{{ title }}&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Hello, {{ user }}!&lt;/h1&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+            <p class="text-lg">
+                In this example, <code>{{ title }}</code> and <code>{{ user }}</code> are placeholders that will be replaced with the values you pass to <code>render_template()</code>.
+            </p>
+        </div>
+    </div>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Template Syntax</h2>
+            <p class="text-lg mb-4">
+                Jinja2 templates use a special syntax for various operations:
+            </p>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Syntax</th>
+                            <th>Purpose</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">{{ '{{ ... }}' }}</td>
+                            <td>Output expressions (variables, function calls)</td>
+                            <td><code>{{ '{{ user.name }}' }}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">{% '{% ... %}' %}</td>
+                            <td>Control structures (if, for, etc.)</td>
+                            <td><code>{% '{% if user %}...{% endif %}' %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">{# '{# ... #}' #}</td>
+                            <td>Comments (not included in output)</td>
+                            <td><code>{# '{# This is a comment #}' #}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">#</td>
+                            <td>Line statements (alternative to {% '{% ... %}' %})</td>
+                            <td><code># for item in items</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

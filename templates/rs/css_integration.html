@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if device_type == 'mobile' %}
+    <!-- Mobile-optimized tutorial layout -->
+    {% include 'partials/mobile_tutorial_header.html' %}
+    <div class="prose prose-lg max-w-none tutorial-content">
+{% else %}
+    <!-- Desktop tutorial layout -->
+    <div class="prose prose-lg max-w-none">
+    <h1 class="text-4xl font-bold text-primary mb-6">CSS Integration in Flask</h1>
+{% endif %}
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Introduction to CSS in Flask</h2>
+            <p class="text-lg">
+                Adding styles to your Flask application is essential for creating a good user experience. Flask makes it easy to integrate CSS through its static files system, allowing you to create beautiful, responsive web applications.
+            </p>
+            <p class="text-lg">
+                In this tutorial, we'll explore different approaches to integrating CSS in your Flask applications, from basic file organization to using CSS frameworks like Bootstrap or Tailwind CSS.
+            </p>
+        </div>
+    </div>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Static Files in Flask</h2>
+            <p class="text-lg mb-4">
+                Flask serves static files (CSS, JavaScript, images) from a special directory called <code>static</code>. This directory is typically located in your application package:
+            </p>
+            <div class="mockup-code mb-4">
+                <pre><code>my_flask_app/
+├── app/
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css
+│   │   ├── js/
+│   │   └── img/
+│   └── templates/
+│       └── index.html</code></pre>
+            </div>
+            <p class="text-lg mb-4">
+                To reference static files in your templates, use the <code>url_for()</code> function with the special endpoint <code>static</code>:
+            </p>
+            <div class="mockup-code mb-4">
+                <pre><code>&lt;!-- In your HTML template --&gt;
+&lt;link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"&gt;</code></pre>
+            </div>
+            <p class="text-lg">
+                The <code>url_for()</code> function generates the correct URL for your static file, taking into account the application's root path and any URL prefixes.
+            </p>
+        </div>
+    </div>
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Organizing CSS Files</h2>
+            <p class="text-lg mb-4">
+                As your application grows, it's essential to organize your CSS files in a way that makes them easy to maintain. Here are some common approaches:
+            </p>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Approach</th>
+                            <th>Description</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">Single CSS file</td>
+                            <td>All styles in one file (e.g., <code>style.css</code>)</td>
+                            <td>Small applications with simple styling needs</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Component-based</td>
+                            <td>Separate CSS files for different components (e.g., <code>navbar.css</code>, <code>forms.css</code>)</td>
+                            <td>Medium-sized applications with distinct UI components</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Page-specific</td>
+                            <td>CSS files for specific pages (e.g., <code>home.css</code>, <code>dashboard.css</code>)</td>
+                            <td>Applications with very different page layouts</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">CSS preprocessors</td>
+                            <td>Using SASS/SCSS or LESS to organize CSS with variables, mixins, etc.</td>
+                            <td>Larger applications with complex styling needs</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

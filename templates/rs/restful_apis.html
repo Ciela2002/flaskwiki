@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="prose max-w-none">
+        <h1 class="text-center text-4xl font-bold mb-8 text-primary">RESTful APIs with Flask</h1>
+        <div class="alert alert-info mb-8">
+            <div class="flex">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>This tutorial provides an academic overview of building RESTful APIs with Flask, covering best practices, common pitfalls, and advanced patterns.</span>
+            </div>
+        </div>
+        <div class="card bg-base-200 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl">Table of Contents</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">Fundamentals</h3>
+                        <ul class="list-disc ml-5">
+                            <li><a href="#rest-principles" class="link link-hover">REST Principles</a></li>
+                            <li><a href="#project-setup" class="link link-hover">Project Setup</a></li>
+                            <li><a href="#api-foundation" class="link link-hover">API Foundation</a></li>
+                            <li><a href="#database-models" class="link link-hover">Database Models</a></li>
+                            <li><a href="#serialization" class="link link-hover">Serialization Schemas</a></li>
+                            <li><a href="#app-factory" class="link link-hover">Application Factory Pattern</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Advanced Topics</h3>
+                        <ul class="list-disc ml-5">
+                            <li><a href="#advanced-security" class="link link-hover">Security Techniques</a></li>
+                            <li><a href="#advanced-patterns" class="link link-hover">Advanced Patterns</a>
+                                <ul class="list-disc ml-5">
+                                    <li><a href="#pagination" class="link link-hover">Advanced Pagination</a></li>
+                                    <li><a href="#versioning" class="link link-hover">API Versioning</a></li>
+                                    <li><a href="#caching" class="link link-hover">Effective Caching</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#documentation" class="link link-hover">API Documentation</a></li>
+                            <li><a href="#testing" class="link link-hover">Testing Strategies</a></li>
+                            <li><a href="#deployment" class="link link-hover">Deployment Best Practices</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="advanced-security" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">Advanced Security for RESTful APIs</h2>
+                <p class="text-lg mb-4">
+                    Security is a critical aspect of RESTful APIs, especially when they are publicly exposed. Here are advanced techniques to secure your APIs beyond basic authentication.
+                </p>
+                <div class="alert alert-warning mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div>
+                        <h3 class="font-bold">Warning!</h3>
+                        <div>API security is a constantly evolving field. Make sure to stay up-to-date with the latest practices and vulnerabilities.</div>
+                    </div>
+                </div>
+                <div class="alert alert-info mt-4 mb-4">
+                    <div class="flex items-start">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>
+                            <p class="font-semibold">OWASP API Security Top 10</p>
+                            <p>The Open Web Application Security Project (OWASP) identifies the top API security risks. The most critical include:</p>
+                            <ul class="list-disc ml-5 mt-2">
+                                <li><strong>Broken Object Level Authorization</strong> - Attackers can access unauthorized resources</li>
+                                <li><strong>Broken Authentication</strong> - Vulnerabilities in authentication mechanisms</li>
+                                <li><strong>Excessive Data Exposure</strong> - APIs returning more data than needed</li>
+                                <li><strong>Lack of Resources & Rate Limiting</strong> - Vulnerability to DoS attacks</li>
+                                <li><strong>Broken Function Level Authorization</strong> - Unauthorized function access</li>
+                            </ul>
+                            <p class="mt-2">These risks require specific security controls which we'll address below.</p>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="text-xl font-semibold text-secondary mb-2">1. CSRF Protection for APIs</h3>
+                <p class="text-lg mb-4">
+                    Although RESTful APIs are often considered stateless, CSRF protection may be necessary if you're using cookies for authentication:
+                </p>
+                <div class="mockup-code mb-4">
+                    <pre><code>from flask_wtf.csrf import CSRFProtect
+
+# Initialize CSRF protection
+csrf = CSRFProtect()
+
+def create_app():
+    app = Flask(__name__)
+    # Configure CSRF protection
+    app.config['WTF_CSRF_ENABLED'] = True
+    app.config['WTF_CSRF_SECRET_KEY'] = os.environ.get('CSRF_SECRET_KEY')
+    csrf.init_app(app)</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

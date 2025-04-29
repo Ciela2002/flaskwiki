@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if title %}{{ title }} - {% endif %}Flask Wiki</title>
+    <!-- Tailwind CSS and DaisyUI via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.5.0/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <!-- Mobile-specific CSS -->
+    {% if device_type == 'mobile' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
+    {% endif %}
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6419E6',
+                        secondary: '#D926A9',
+                        accent: '#1FB2A6',
+                    }
+                }
+            },
+            daisyui: {
+                themes: ["dark", "night", "synthwave"],
+            },
+        }
+    </script>
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+        }
+    </style>
+    
+    {% if device_type == 'mobile' %}
+    <style>
+        /* Mobile-specific styles */
+        .prose pre {
+            padding: 0.5rem !important;
+            font-size: 0.8rem !important;
+            overflow-x: auto;
+        }
+        .card-body {
+            padding: 1rem !important;
+        }
+        h1 {
+            font-size: 1.75rem !important;
+        }
+        h2 {
+            font-size: 1.5rem !important;
+        }
+        h3 {
+            font-size: 1.25rem !important;
+        }
+    </style>
+    {% endif %}
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar bg-base-200 shadow-lg">
+        <div class="navbar-start">
+            <div class="dropdown">
+                <label tabindex="0" class="btn btn-ghost lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+                    </svg>
+                </label>
+                <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+                    <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                    <li><a href="{{ url_for('main.introduction') }}">Introduction to Flask</a></li>
+                    <li><a href="{{ url_for('main.wiki_index') }}">Wiki Index</a></li>
+                </ul>
+            </div>
+            <a href="{{ url_for('main.index') }}" class="btn btn-ghost normal-case text-xl text-primary">Flask Wiki</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('main.introduction') }}">Introduction to Flask</a></li>
+                <li><a href="{{ url_for('main.wiki_index') }}">Wiki Index</a></li>
+            </ul>
+        </div>
+        <div class="navbar-end">
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-circle">
+                    <div class="indicator">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                    </div>
+                </label>
+                <div tabindex="0" class="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-200 shadow">
+                    <div class="card-body">
+                        <div class="card-actions">
+                            <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-block">Home</a>
+                            <a href="{{ url_for('main.introduction') }}" class="btn btn-ghost btn-block">Introduction</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto px-4 py-2">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} shadow-lg mb-2">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <span>{{ message }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main content -->
+    <main class="container mx-auto px-4 py-8">
+        {{ ... }}
+    </main>
+
+    <!-- Back to top button - only visible on rs/ pages -->
+    {% if request.path.startswith('/rs/') %}
+    <button id="back-to-top" class="btn btn-circle btn-primary fixed bottom-8 right-8 opacity-70 hover:opacity-100 shadow-lg" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-10 bg-base-200 text-base-content">
+        <div>
+            <div class="grid grid-flow-col gap-4">
+                <a href="{{ url_for('main.contribute') }}" class="link link-hover">Contribute</a>
+                <a href="{{ url_for('main.about') }}" class="link link-hover">About</a>
+            </div>
+            <p>Copyright &copy; {{ now.year }} - Flask Wiki - A Non-Profit Educational Project</p>
+        </div>
+    </footer>
+    
+    <!-- Include custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Back to top button script - only included on rs/ pages -->
+    {% if request.path.startswith('/rs/') %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTopButton = document.getElementById('back-to-top');
+            
+            // Show/hide button based on scroll position
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTopButton.style.display = 'flex';
+                } else {
+                    backToTopButton.style.display = 'none';
+                }
+            });
+            
+            // Scroll to top when button is clicked
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

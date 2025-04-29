@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="prose prose-sm max-w-none tutorial-content mobile-tutorial">
+    <!-- Mobile-optimized header with navigation -->
+    <div class="mobile-tutorial-header mb-4">
+        <!-- Back button -->
+        <a href="{{ url_for('main.wiki_index') }}" class="btn btn-ghost btn-sm mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back
+        </a>
+        
+        <!-- Tutorial title -->
+        <h1 class="text-2xl font-bold text-primary mb-2">{{ title }}</h1>
+        
+        <!-- Table of contents toggle -->
+        <div class="collapse bg-base-200 mb-4">
+            <input type="checkbox" /> 
+            <div class="collapse-title font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                Table of Contents
+            </div>
+            <div class="collapse-content"> 
+                <div class="toc">
+                    <ul class="menu menu-compact">
+                        <li><a href="#section1">Section 1</a></li>
+                        <li><a href="#section2">Section 2</a></li>
+                        <li><a href="#section3">Section 3</a></li>
+                        <!-- Add more sections as needed for the tutorial -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress bar -->
+        <div class="w-full bg-base-300 rounded-full h-2.5 mb-4">
+            <div class="bg-primary h-2.5 rounded-full" id="reading-progress" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="card bg-base-300 shadow-md mb-6" id="section1">
+        <div class="card-body p-4">
+            <h2 class="card-title text-xl text-accent">Section 1</h2>
+            <p>
+                Content for section 1.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Section 2 -->
+    <div class="card bg-base-300 shadow-md mb-6" id="section2">
+        <div class="card-body p-4">
+            <h2 class="card-title text-xl text-accent">Section 2</h2>
+            <p class="mb-2">
+                Content for section 2.
+            </p>
+            
+            <!-- Code example -->
+            <div class="mockup-code text-xs mb-3 p-2">
+                <pre><code># Code example
+def example():
+    return "This is an example"</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Section 3 -->
+    <div class="card bg-base-300 shadow-md mb-6" id="section3">
+        <div class="card-body p-4">
+            <h2 class="card-title text-xl text-accent">Section 3</h2>
+            <p class="mb-2">
+                Content for section 3.
+            </p>
+            
+            <!-- List example -->
+            <ul class="list-disc list-inside space-y-1 mb-3 pl-2">
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Navigation buttons -->
+    <div class="flex justify-between mt-6 mb-4">
+        <a href="{{ url_for('main.wiki_index') }}" class="btn btn-outline btn-sm">Wiki Index</a>
+        <a href="#" class="btn btn-primary btn-sm">Next: Another Tutorial</a>
+    </div>
+</div>
+
+<!-- Script for progress bar -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Reading progress
+    const progressBar = document.getElementById('reading-progress');
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.body.offsetHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        progressBar.style.width = scrollPercent + '%';
+    });
+});
+</script>
+{% endblock %}
