@@ -17,17 +17,7 @@ Flask Wiki is a community-driven wiki that aims to provide comprehensive, access
 
 **Important:** Flask Wiki is an open-source project, but for security reasons (protection against SQL attacks, injections, etc.), the backend code is not publicly available. Only templates and educational resources are shared in this repository.
 
-## Installation
 
-1. Clone this repository
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Run the application:
-   ```
-   python run.py
-   ```
 
 ## Contributing
 
