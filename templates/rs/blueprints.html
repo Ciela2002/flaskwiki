@@ -1,0 +1,483 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="prose max-w-none">
+        <h1 class="text-center text-4xl font-bold mb-8 text-primary">Flask Blueprints</h1>
+        
+        <div class="alert alert-info mb-8">
+            <div class="flex">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>This tutorial explains Flask Blueprints in detail, their benefits, and how to effectively use them to structure and organize Flask applications from small to large scale.</span>
+            </div>
+        </div>
+        
+        <div class="card bg-base-200 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl">Table of Contents</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">Fundamentals</h3>
+                        <ul class="list-disc ml-5">
+                            <li><a href="#blueprint-intro" class="link link-hover">Introduction to Blueprints</a></li>
+                            <li><a href="#why-blueprints" class="link link-hover">Why Use Blueprints</a></li>
+                            <li><a href="#basic-setup" class="link link-hover">Basic Setup</a></li>
+                            <li><a href="#blueprint-structure" class="link link-hover">Blueprint Structure</a></li>
+                            <li><a href="#app-factory" class="link link-hover">Integration with Application Factory</a></li>
+                            <li><a href="#url-prefix" class="link link-hover">URL Prefixes and Names</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">Advanced Topics</h3>
+                        <ul class="list-disc ml-5">
+                            <li><a href="#nested-blueprints" class="link link-hover">Nested Blueprints</a></li>
+                            <li><a href="#blueprint-resources" class="link link-hover">Blueprint Resources</a>
+                                <ul class="list-disc ml-5">
+                                    <li><a href="#static-files" class="link link-hover">Static Files</a></li>
+                                    <li><a href="#templates" class="link link-hover">Blueprint Templates</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#blueprint-hooks" class="link link-hover">Hooks and Middleware</a></li>
+                            <li><a href="#blueprint-patterns" class="link link-hover">Design Patterns</a></li>
+                            <li><a href="#testing-blueprints" class="link link-hover">Testing Blueprints</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% include 'partials/adsense_mid.html' %}
+    
+        <div id="blueprint-intro" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">Introduction to Blueprints</h2>
+                <p class="text-lg mb-4">
+                    Blueprints are one of Flask's most powerful features. They allow you to organize a Flask application into modular and reusable components, each implementing a distinct set of functionalities.
+                </p>
+                
+                <div class="alert alert-info mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 h-6 w-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        A Blueprint in Flask is comparable to a mini-application that can be registered with a main application. It is not a separate application — it cannot be run on its own — but allows you to extend an existing application with its own routes, templates, static files, and business logic.
+                    </div>
+                </div>
+                
+                <h3 class="text-xl font-semibold text-secondary mb-2">Official Definition</h3>
+                <p class="text-lg mb-4">
+                    According to Flask's official documentation, a Blueprint is:
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code>"""
+An object that works similarly to a Flask application,
+but it's not actually an application.
+It's rather a 'blueprint' describing how to construct or extend an application.
+"""</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div id="why-blueprints" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">Why Use Blueprints</h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th>Advantage</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-semibold">Modularity</td>
+                                <td>Divide your application into independent logical modules for better organization and maintenance.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">Reusability</td>
+                                <td>Create components that can be reused across different applications or projects.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">Namespaces</td>
+                                <td>Avoid URL name conflicts and group related routes under a common prefix.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">Separation of Concerns</td>
+                                <td>Isolate business logic by functional domain (authentication, API, admin pages, etc.).</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">Scalability</td>
+                                <td>Facilitate progressive growth of your application by adding distinct blueprints.</td>
+                            </tr>
+                            <tr>
+                                <td class="font-semibold">Code Clarity</td>
+                                <td>Improve readability and maintainability by organizing code logically.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-warning mt-6 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div>
+                        <h3 class="font-bold">When to Use Blueprints?</h3>
+                        <div>Blueprints are particularly useful for medium to large applications. For simple small applications, organizing with blueprints might introduce unnecessary complexity. Evaluate the size and complexity of your project before deciding.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="basic-setup" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">Basic Setup</h2>
+                <p class="text-lg mb-4">
+                    Here's how to configure Blueprints in a Flask application:
+                </p>
+                
+                <h3 class="text-xl font-semibold text-secondary mb-2">1. Create a Blueprint</h3>
+                <p class="text-lg mb-2">
+                    Let's start by creating a simple blueprint to handle authentication routes:
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code># app/routes/auth.py
+
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_user, logout_user, login_required, current_user
+
+# Create a blueprint with a name and template prefix
+auth_bp = Blueprint(
+    'auth',                  # Blueprint name
+    __name__,                # Where the blueprint is defined
+    template_folder='templates/auth',  # Templates folder (optional)
+    static_folder='static/auth',       # Static files folder (optional)
+    url_prefix='/auth'       # URL prefix for all blueprint routes
+)
+
+# Add routes to the blueprint
+@auth_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    if request.method == 'POST':
+        # Authentication logic
+        # ...
+        flash('Login successful!', 'success')
+        return redirect(url_for('main.index'))
+        
+    return render_template('auth/login.html')
+
+@auth_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logout successful!', 'success')
+    return redirect(url_for('auth.login'))
+
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
+    # Registration logic
+    # ...
+    return render_template('auth/register.html')</code></pre>
+                </div>
+                
+                <h3 class="text-xl font-semibold text-secondary mb-2">2. Register the Blueprint with the Application</h3>
+                <p class="text-lg mb-2">
+                    Once the blueprint is created, you need to register it with your Flask application:
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code># app/__init__.py
+
+from flask import Flask
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object('config.Config')
+    
+    # Initialize extensions
+    # ...
+    
+    # Register blueprints
+    from app.routes.auth import auth_bp
+    from app.routes.main import main_bp
+    
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(main_bp)
+    
+    return app</code></pre>
+                </div>
+                
+                <div class="alert alert-info mt-4 mb-4">
+                    <div class="flex items-start">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>
+                            <p class="font-semibold">Important Parameters When Creating a Blueprint</p>
+                            <ul class="list-disc ml-5 mt-2">
+                                <li><strong>name</strong> - A unique identifier for the blueprint</li>
+                                <li><strong>import_name</strong> - Usually __name__, used to resolve relative paths</li>
+                                <li><strong>static_folder</strong> - Folder for blueprint-specific static files</li>
+                                <li><strong>template_folder</strong> - Folder for blueprint-specific templates</li>
+                                <li><strong>url_prefix</strong> - Added to the beginning of all blueprint URLs</li>
+                                <li><strong>subdomain</strong> - Limits the blueprint to a specific subdomain</li>
+                                <li><strong>url_defaults</strong> - A dictionary of default values for URL parameters</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="url-prefix" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">URL Prefixes and Names</h2>
+                <p class="text-lg mb-4">
+                    URL prefixes and blueprint names play an important role in organizing routes and generating URLs.
+                </p>
+                
+                <h3 class="text-xl font-semibold text-secondary mb-2">URL Prefixes</h3>
+                <p class="text-lg mb-2">
+                    URL prefixes allow you to group all routes of a blueprint under a common path:
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code># Creating a blueprint with a URL prefix
+api_bp = Blueprint('api', __name__, url_prefix='/api/v1')
+
+# All routes will be prefixed with /api/v1
+@api_bp.route('/users')           # Accessible via /api/v1/users
+def get_users():
+    pass
+
+@api_bp.route('/posts')           # Accessible via /api/v1/posts
+def get_posts():
+    pass</code></pre>
+                </div>
+                
+                <h3 class="text-xl font-semibold text-secondary mb-2">Namespaces and url_for()</h3>
+                <p class="text-lg mb-2">
+                    Blueprints create namespaces for route names. To generate URLs to routes defined in a blueprint, use the <code>blueprint_name.view_function_name</code> syntax:
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code>from flask import url_for
+
+# URL to a route in the auth blueprint
+login_url = url_for('auth.login')
+
+# URL to a route in the main blueprint
+home_url = url_for('main.index')
+
+# URL with parameters
+profile_url = url_for('user.profile', username='john')</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div id="blueprint-resources" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">Blueprint Resources</h2>
+                <p class="text-lg mb-4">
+                    Blueprints can have their own resources, such as static files and templates, independently from the main application.
+                </p>
+                
+                <div id="static-files" class="mb-6">
+                    <h3 class="text-xl font-semibold text-secondary mb-2">Static Files in Blueprints</h3>
+                    <p class="text-lg mb-2">
+                        Each blueprint can have its own static files folder:
+                    </p>
+                    
+                    <div class="mockup-code mb-4">
+                        <pre><code># File structure
+blueprint_folder/
+├── static/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   └── script.js
+│   └── img/
+│       └── logo.png
+└── __init__.py
+
+# Creating the blueprint with a static folder
+from flask import Blueprint
+
+admin_bp = Blueprint('admin', __name__,
+                    static_folder='static',
+                    static_url_path='/admin-static')  # Optional URL
+
+# Usage in a template
+{% raw %}
+<link rel="stylesheet" href="{{ url_for('admin.static', filename='css/style.css') }}">
+<script src="{{ url_for('admin.static', filename='js/script.js') }}"></script>
+<img src="{{ url_for('admin.static', filename='img/logo.png') }}">
+{% endraw %}</code></pre>
+                    </div>
+                </div>
+                
+                <div id="templates" class="mb-6">
+                    <h3 class="text-xl font-semibold text-secondary mb-2">Blueprint-Specific Templates</h3>
+                    <p class="text-lg mb-2">
+                        Blueprints can also have their own templates:
+                    </p>
+                    
+                    <div class="mockup-code mb-4">
+                        <pre><code># File structure
+blueprint_folder/
+├── templates/
+│   ├── admin/  # Optional subfolder to avoid name conflicts
+│   │   ├── dashboard.html
+│   │   └── users.html
+└── __init__.py
+
+# Creating the blueprint with a templates folder
+from flask import Blueprint, render_template
+
+admin_bp = Blueprint('admin', __name__,
+                    template_folder='templates')
+
+@admin_bp.route('/dashboard')
+def dashboard():
+    # Rendering a template from the blueprint folder
+    return render_template('admin/dashboard.html')
+
+# Note that Flask looks first in the application's templates folder
+# before looking in the blueprint's templates folder</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="blueprint-hooks" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">Hooks and Middleware</h2>
+                <p class="text-lg mb-4">
+                    Blueprints have their own hooks, similar to those of the Flask application, but with a scope limited to the blueprint.
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code># app/blueprints/auth/__init__.py
+from flask import Blueprint, g, session, redirect, url_for, request
+
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+# Executed before each request to the blueprint
+@auth_bp.before_request
+def check_authentication():
+    """Check if the user is authenticated for routes in this blueprint"""
+    if not session.get('user_id') and request.endpoint != 'auth.login':
+        return redirect(url_for('auth.login'))
+
+# Executed after each request to the blueprint, even in case of error
+@auth_bp.after_request
+def add_header(response):
+    """Add additional headers to responses from this blueprint"""
+    response.headers['X-Auth-Version'] = '1.0'
+    return response
+
+# Executed if an unhandled exception is raised in the blueprint
+@auth_bp.errorhandler(404)
+def page_not_found(e):
+    """Custom 404 error handler for this blueprint"""
+    return render_template('auth/404.html'), 404
+
+# Modifies the template context for templates rendered by this blueprint
+@auth_bp.context_processor
+def inject_user():
+    """Inject the current_user variable into all templates of this blueprint"""
+    if session.get('user_id'):
+        user = User.query.get(session['user_id'])
+        return {'current_user': user}
+    return {'current_user': None}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div id="blueprint-patterns" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">Design Patterns</h2>
+                <p class="text-lg mb-4">
+                    Blueprints allow you to implement several advanced design patterns in your Flask applications.
+                </p>
+                
+                <h3 class="text-xl font-semibold text-secondary mb-2">Functional Model</h3>
+                <p class="text-lg mb-2">
+                    Organization by business function:
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code>app/
+├── blueprints/
+│   ├── auth/          # Authentication and user management
+│   ├── blog/          # Blog features
+│   ├── shop/          # Store features
+│   └── admin/         # Administration</code></pre>
+                </div>
+                
+                <h3 class="text-xl font-semibold text-secondary mb-2">Request Type Model</h3>
+                <p class="text-lg mb-2">
+                    Separation of API and web interfaces:
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code>app/
+├── blueprints/
+│   ├── api/           # API endpoints for mobile/JS clients
+│   └── web/           # Traditional web pages with templates</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div id="testing-blueprints" class="card bg-base-300 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl text-accent">Testing Blueprints</h2>
+                <p class="text-lg mb-4">
+                    Blueprints also facilitate unit and integration testing, as they allow you to test each module in isolation.
+                </p>
+                
+                <div class="mockup-code mb-4">
+                    <pre><code>import pytest
+from app import create_app
+from app.blueprints.auth import auth_bp
+
+@pytest.fixture
+def client():
+    """Test client for the auth blueprint only"""
+    app = create_app()
+    # Register only the blueprint we want to test
+    app.register_blueprint(auth_bp)
+    
+    with app.test_client() as client:
+        yield client
+
+def test_login_page(client):
+    """Test that the login page displays correctly"""
+    response = client.get('/auth/login')
+    assert response.status_code == 200
+    assert b'Login' in response.data
+
+def test_register_page(client):
+    """Test that the registration page displays correctly"""
+    response = client.get('/auth/register')
+    assert response.status_code == 200
+    assert b'Register' in response.data</code></pre>
+                </div>
+                
+                <div class="alert alert-info mt-4 mb-4">
+                    <div class="flex items-start">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>
+                            <p class="font-semibold">Testing Advantage</p>
+                            <p>One of the major advantages of blueprints for testing is the ability to test each component in isolation, without having to load the entire application. This speeds up tests and makes them more accurate.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-between mt-6 mb-4">
+            <a href="{{ url_for('main.restful_apis') }}" class="btn btn-outline">Previous: RESTful APIs</a>
+            <a href="{{ url_for('main.deployment_guide') }}" class="btn btn-primary">Next: Deployment</a>
+        </div>
+    </div>
+{% endblock %}

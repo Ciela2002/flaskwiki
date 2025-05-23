@@ -4,10 +4,12 @@
 <div class="container mx-auto px-4 py-8">
     <div class="prose dark:prose-invert max-w-none">
         <h1 class="text-3xl font-bold text-primary mb-6">User Authentication in Flask</h1>
+
         <p class="lead mb-6">
             Authentication is a critical aspect of most web applications, allowing users to create accounts, log in, and access protected resources.
             This guide covers implementing user authentication in Flask applications using Flask-Login and best security practices.
         </p>
+
         <div class="alert alert-info mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <div>
@@ -15,16 +17,22 @@
                 <div>Authentication and security are complex topics. This guide covers the basics, but for production applications, consider using established libraries and frameworks, and always follow the latest security best practices.</div>
             </div>
         </div>
+        
+        {% include 'partials/adsense_mid.html' %}
     </div>
+
     <div class="card bg-base-200 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-secondary text-2xl mb-4">Getting Started with Flask-Login</h2>
+            
             <p class="mb-4">Flask-Login is a popular extension that provides user session management for Flask. It handles logging in, logging out, and remembering users' sessions.</p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">1. Installation</h3>
             <p class="mb-2">Install Flask-Login using pip:</p>
             <div class="mockup-code mb-4">
                 <pre><code class="language-bash">pip install flask-login</code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">2. Basic Setup</h3>
             <p class="mb-2">Configure Flask-Login in your application:</p>
             <div class="mockup-code mb-4">
@@ -41,6 +49,7 @@ login_manager.login_view = 'auth.login'  # Specify the login view route
 login_manager.login_message_category = 'info'  # Optional: flash message category
 </code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">3. User Model</h3>
             <p class="mb-2">Create a User model that implements the required Flask-Login methods:</p>
             <div class="mockup-code mb-4">
@@ -71,12 +80,14 @@ def load_user(user_id):
             </div>
         </div>
     </div>
+    
     <div class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Implementing Authentication Routes</h2>
             <p class="text-lg mb-4">
                 Now let's implement the routes for user registration, login, and logout.
             </p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">1. Form Classes</h3>
             <p class="mb-2">Create forms for registration and login:</p>
             <div class="mockup-code mb-4">
@@ -89,9 +100,466 @@ from .models import User
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Register')
+    
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('Username already taken. Please choose a different one.')
+    
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('Email already registered. Please use a different one.')
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Log In')
+</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Authentication Routes</h3>
+            <p class="mb-2">Create routes for registration, login, and logout:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># routes/auth.py
+from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.urls import url_parse
+from . import db
+from .models import User
+from .forms import RegistrationForm, LoginForm
+
+auth = Blueprint('auth', __name__)
+
+@auth.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You can now log in.', 'success')
+        return redirect(url_for('auth.login'))
+    
+    return render_template('auth/register.html', title='Register', form=form)
+
+@auth.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid email or password', 'danger')
+            return redirect(url_for('auth.login'))
+        
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('main.index')
+        return redirect(next_page)
+    
+    return render_template('auth/login.html', title='Log In', form=form)
+
+@auth.route('/logout')
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('main.index'))
 </code></pre>
             </div>
         </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Creating Authentication Templates</h2>
+            
+            <p class="mb-4">Now let's create the HTML templates for registration and login forms.</p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Register Template</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/auth/register.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    &lt;div class="container mx-auto mt-5">
+        &lt;div class="row justify-content-center">
+            &lt;div class="col-md-6">
+                &lt;div class="card">
+                    &lt;div class="card-header">
+                        &lt;h2 class="text-center">Register&lt;/h2>
+                    &lt;/div>
+                    &lt;div class="card-body">
+                        &lt;form method="POST" action="">
+                            {{ form.hidden_tag() }}
+                            
+                            &lt;div class="form-group mb-3">
+                                {{ form.username.label(class="form-label") }}
+                                {{ form.username(class="form-control") }}
+                                {% if form.username.errors %}
+                                    &lt;div class="text-danger">
+                                        {% for error in form.username.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    &lt;/div>
+                                {% endif %}
+                            &lt;/div>
+                            
+                            &lt;div class="form-group mb-3">
+                                {{ form.email.label(class="form-label") }}
+                                {{ form.email(class="form-control") }}
+                                {% if form.email.errors %}
+                                    &lt;div class="text-danger">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    &lt;/div>
+                                {% endif %}
+                            &lt;/div>
+                            
+                            &lt;div class="form-group mb-3">
+                                {{ form.password.label(class="form-label") }}
+                                {{ form.password(class="form-control") }}
+                                {% if form.password.errors %}
+                                    &lt;div class="text-danger">
+                                        {% for error in form.password.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    &lt;/div>
+                                {% endif %}
+                            &lt;/div>
+                            
+                            &lt;div class="form-group mb-3">
+                                {{ form.confirm_password.label(class="form-label") }}
+                                {{ form.confirm_password(class="form-control") }}
+                                {% if form.confirm_password.errors %}
+                                    &lt;div class="text-danger">
+                                        {% for error in form.confirm_password.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    &lt;/div>
+                                {% endif %}
+                            &lt;/div>
+                            
+                            &lt;div class="form-group mb-3 text-center">
+                                {{ form.submit(class="btn btn-primary") }}
+                            &lt;/div>
+                        &lt;/form>
+                    &lt;/div>
+                    &lt;div class="card-footer text-center">
+                        Already have an account? &lt;a href="{{ url_for('auth.login') }}">Log In&lt;/a>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    &lt;/div>
+{% endblock %}{% endraw %}</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Login Template</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/auth/login.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    &lt;div class="container mx-auto mt-5">
+        &lt;div class="row justify-content-center">
+            &lt;div class="col-md-6">
+                &lt;div class="card">
+                    &lt;div class="card-header">
+                        &lt;h2 class="text-center">Log In&lt;/h2>
+                    &lt;/div>
+                    &lt;div class="card-body">
+                        &lt;form method="POST" action="">
+                            {{ form.hidden_tag() }}
+                            
+                            &lt;div class="form-group mb-3">
+                                {{ form.email.label(class="form-label") }}
+                                {{ form.email(class="form-control") }}
+                                {% if form.email.errors %}
+                                    &lt;div class="text-danger">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    &lt;/div>
+                                {% endif %}
+                            &lt;/div>
+                            
+                            &lt;div class="form-group mb-3">
+                                {{ form.password.label(class="form-label") }}
+                                {{ form.password(class="form-control") }}
+                                {% if form.password.errors %}
+                                    &lt;div class="text-danger">
+                                        {% for error in form.password.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    &lt;/div>
+                                {% endif %}
+                            &lt;/div>
+                            
+                            &lt;div class="form-check mb-3">
+                                {{ form.remember_me(class="form-check-input") }}
+                                {{ form.remember_me.label(class="form-check-label") }}
+                            &lt;/div>
+                            
+                            &lt;div class="form-group mb-3 text-center">
+                                {{ form.submit(class="btn btn-primary") }}
+                            &lt;/div>
+                        &lt;/form>
+                    &lt;/div>
+                    &lt;div class="card-footer text-center">
+                        Don't have an account? &lt;a href="{{ url_for('auth.register') }}">Register&lt;/a>
+                        &lt;br>
+                        &lt;a href="{{ url_for('auth.reset_password_request') }}">Forgot your password?&lt;/a>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    &lt;/div>
+{% endblock %}{% endraw %}</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Protecting Routes</h2>
+            <p class="text-lg mb-4">
+                Use the <code>@login_required</code> decorator to protect routes that should only be accessible to authenticated users.
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># routes/protected.py
+from flask import Blueprint, render_template
+from flask_login import login_required, current_user
+
+protected = Blueprint('protected', __name__)
+
+@protected.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html', user=current_user)
+
+@protected.route('/settings')
+@login_required
+def settings():
+    return render_template('settings.html', user=current_user)
+</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                When an unauthenticated user tries to access a protected route, they will be redirected to the login page specified in the <code>login_view</code> parameter when setting up Flask-Login.
+            </p>
+        </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Password Reset Functionality</h2>
+            
+            <p class="mb-4">A complete authentication system should include a password reset feature. Here's how to implement it:</p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Form Classes</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># forms.py
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('New Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')
+</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Token Generation</h3>
+            <p class="mb-2">Add methods to generate and verify reset tokens:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># models.py
+from time import time
+import jwt
+from flask import current_app
+
+class User(UserMixin, db.Model):
+    # ... existing code ...
+    
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256'
+        )
+    
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                algorithms=['HS256']
+            )['reset_password']
+        except:
+            return None
+        return User.query.get(id)
+</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">3. Email Function</h3>
+            <p class="mb-2">Create a function to send password reset emails:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># email.py
+from flask import render_template
+from flask_mail import Message
+from . import mail
+
+def send_password_reset_email(user):
+    token = user.get_reset_password_token()
+    msg = Message('Password Reset Request',
+                  sender='noreply@example.com',
+                  recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link:
+{url_for('auth.reset_password', token=token, _external=True)}
+
+If you did not make this request, please ignore this email.
+'''
+    mail.send(msg)
+</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">4. Reset Routes</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># routes/auth.py
+@auth.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for instructions to reset your password.', 'info')
+        return redirect(url_for('auth.login'))
+    
+    return render_template('auth/reset_password_request.html', title='Reset Password', form=form)
+
+@auth.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    user = User.verify_reset_password_token(token)
+    if not user:
+        flash('Invalid or expired token', 'warning')
+        return redirect(url_for('auth.reset_password_request'))
+    
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been reset.', 'success')
+        return redirect(url_for('auth.login'))
+    
+    return render_template('auth/reset_password.html', form=form)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Advanced Authentication Features</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Description</th>
+                            <th>Implementation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Two-Factor Authentication (2FA)</td>
+                            <td>Add an extra layer of security using time-based one-time passwords (TOTP)</td>
+                            <td>Use <code>pyotp</code> and <code>Flask-TOTP</code> to implement 2FA with authenticator apps</td>
+                        </tr>
+                        <tr>
+                            <td>OAuth Integration</td>
+                            <td>Allow users to log in with social media accounts (Google, Facebook, etc.)</td>
+                            <td>Use <code>Flask-Dance</code> or <code>Authlib</code> to implement OAuth authentication</td>
+                        </tr>
+                        <tr>
+                            <td>Rate Limiting</td>
+                            <td>Prevent brute force attacks by limiting login attempts</td>
+                            <td>Use <code>Flask-Limiter</code> to implement rate limiting on authentication routes</td>
+                        </tr>
+                        <tr>
+                            <td>Account Lockout</td>
+                            <td>Lock accounts after multiple failed login attempts</td>
+                            <td>Track failed attempts in the database and implement lockout logic</td>
+                        </tr>
+                        <tr>
+                            <td>Remember Me Functionality</td>
+                            <td>Allow users to stay logged in across browser sessions</td>
+                            <td>Use Flask-Login's remember functionality and secure cookies</td>
+                        </tr>
+                        <tr>
+                            <td>Role-Based Access Control</td>
+                            <td>Define user roles with different permissions</td>
+                            <td>Use <code>Flask-Principal</code> or implement custom role logic</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Security Best Practices</h2>
+            <ul class="list-disc list-inside space-y-2 mb-4">
+                <li><span class="font-semibold">Use HTTPS:</span> Always serve your application over HTTPS in production</li>
+                <li><span class="font-semibold">Hash passwords:</span> Never store plain-text passwords, use secure hashing algorithms like bcrypt</li>
+                <li><span class="font-semibold">Implement CSRF protection:</span> Protect against cross-site request forgery attacks</li>
+                <li><span class="font-semibold">Set secure cookie flags:</span> Use secure, HTTPOnly, and SameSite cookie attributes</li>
+                <li><span class="font-semibold">Implement account lockout:</span> Lock accounts after multiple failed login attempts</li>
+                <li><span class="font-semibold">Use strong password policies:</span> Require complex passwords with minimum length</li>
+                <li><span class="font-semibold">Implement logging:</span> Log authentication events for security monitoring</li>
+                <li><span class="font-semibold">Use parameterized SQL queries:</span> Prevent SQL injection attacks</li>
+                <li><span class="font-semibold">Sanitize user input:</span> Prevent cross-site scripting (XSS) attacks</li>
+                <li><span class="font-semibold">Implement proper session management:</span> Use secure session handling</li>
+                <li><span class="font-semibold">Validate email addresses:</span> Implement email verification for new accounts</li>
+                <li><span class="font-semibold">Keep dependencies updated:</span> Regularly update libraries to fix security vulnerabilities</li>
+            </ul>
+            
+            <div class="alert alert-warning mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <div class="font-bold">Security Warning</div>
+                    <div>Authentication is a complex topic with significant security implications. For production applications, consider using well-established libraries and frameworks that have been thoroughly tested and reviewed.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-between">
+        <a href="{{ url_for('main.forms_validation') }}" class="btn btn-outline">Previous: Forms & Validation</a>
+        <a href="{{ url_for('main.restful_apis') }}" class="btn btn-primary">Next: RESTful APIs</a>
     </div>
 </div>
 {% endblock %}

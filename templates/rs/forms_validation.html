@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Code de vérification AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3470715885235094"
+     crossorigin="anonymous"></script>
 <div class="container mx-auto px-4 py-8">
     <div class="prose dark:prose-invert max-w-none">
         <h1 class="text-3xl font-bold text-primary mb-6">Forms & Validation in Flask</h1>
+
         <p class="lead mb-6">
             Forms are a fundamental part of web applications, allowing users to submit data to your application. 
             This guide covers how to create, validate, and process forms in Flask applications.
         </p>
+
         <div class="alert alert-info mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <div>
@@ -16,15 +21,21 @@
             </div>
         </div>
     </div>
+    
+    {% include 'partials/adsense_mid.html' %}
+
     <div class="card bg-base-200 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-secondary text-2xl mb-4">Introduction to Flask-WTF</h2>
+            
             <p class="mb-4">Flask-WTF is a Flask extension that integrates WTForms, making it easy to create and validate forms in Flask applications.</p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">1. Installation</h3>
             <p class="mb-2">Install Flask-WTF using pip:</p>
             <div class="mockup-code mb-4">
                 <pre><code class="language-bash">pip install Flask-WTF</code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">2. Basic Configuration</h3>
             <p class="mb-2">Configure Flask-WTF in your application:</p>
             <div class="mockup-code mb-4">
@@ -37,6 +48,7 @@ app.config['SECRET_KEY'] = 'your-secret-key'  # Required for CSRF protection
 csrf = CSRFProtect(app)  # Enable CSRF protection globally
 </code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">3. Creating a Simple Form</h3>
             <p class="mb-2">Define a form class in a separate file (e.g., forms.py):</p>
             <div class="mockup-code mb-4">
@@ -54,60 +66,395 @@ class ContactForm(FlaskForm):
             </div>
         </div>
     </div>
+    
     <div class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Displaying Forms in Templates</h2>
             <p class="text-lg mb-4">
                 Once you've defined your forms, you need to display them in your templates. Here's how to render forms in Jinja2 templates:
             </p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">1. Form Template</h3>
             <p class="mb-2">Create a template to render your form:</p>
             <div class="mockup-code mb-4">
-                <pre><code class="language-html">{% raw %}&lt;!-- templates/contact.html --&gt;
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/contact.html -->
 {% extends 'base.html' %}
+
 {% block content %}
-    &lt;h1&gt;Contact Us&lt;/h1&gt;
-    &lt;form method="POST" action="{{ url_for('contact') }}"&gt;
+    &lt;h1>Contact Us&lt;/h1>
+    &lt;form method="POST" action="{{ url_for('contact') }}">
         {{ form.csrf_token }}
-        &lt;div class="form-group"&gt;
+        
+        &lt;div class="form-group">
             {{ form.name.label }}
             {{ form.name(class="form-control") }}
             {% if form.name.errors %}
-                &lt;div class="text-danger"&gt;
+                &lt;div class="text-danger">
                     {% for error in form.name.errors %}
                         {{ error }}
                     {% endfor %}
-                &lt;/div&gt;
+                &lt;/div>
             {% endif %}
-        &lt;/div&gt;
-        &lt;div class="form-group"&gt;
+        &lt;/div>
+        
+        &lt;div class="form-group">
             {{ form.email.label }}
             {{ form.email(class="form-control") }}
             {% if form.email.errors %}
-                &lt;div class="text-danger"&gt;
+                &lt;div class="text-danger">
                     {% for error in form.email.errors %}
                         {{ error }}
                     {% endfor %}
-                &lt;/div&gt;
+                &lt;/div>
             {% endif %}
-        &lt;/div&gt;
-        &lt;div class="form-group"&gt;
+        &lt;/div>
+        
+        &lt;div class="form-group">
             {{ form.message.label }}
             {{ form.message(class="form-control") }}
             {% if form.message.errors %}
-                &lt;div class="text-danger"&gt;
+                &lt;div class="text-danger">
                     {% for error in form.message.errors %}
                         {{ error }}
                     {% endfor %}
-                &lt;/div&gt;
+                &lt;/div>
             {% endif %}
-        &lt;/div&gt;
-        &lt;button type="submit" class="btn btn-primary"&gt;Send&lt;/button&gt;
-    &lt;/form&gt;
-{% endblock %}{% endraw %}
+        &lt;/div>
+        
+        {{ form.submit(class="btn btn-primary") }}
+    &lt;/form>
+{% endblock %}{% endraw %}</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Route Function</h3>
+            <p class="mb-2">Create a route function to handle the form:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># routes.py
+from flask import render_template, flash, redirect, url_for
+from . import app
+from .forms import ContactForm
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form = ContactForm()
+    
+    if form.validate_on_submit():
+        # Process form data
+        name = form.name.data
+        email = form.email.data
+        message = form.message.data
+        
+        # Do something with the data (e.g., save to database, send email)
+        # ...
+        
+        flash('Your message has been sent!', 'success')
+        return redirect(url_for('contact'))
+    
+    return render_template('contact.html', form=form)
 </code></pre>
             </div>
         </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Custom Validation</h2>
+            
+            <p class="mb-4">WTForms provides several built-in validators, but sometimes you need to create custom validation rules.</p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Custom Validators</h3>
+            <p class="mb-2">Create custom validators for specific validation needs:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># Custom validator function
+from wtforms.validators import ValidationError
+
+def validate_username(form, field):
+    if field.data.lower() in ['admin', 'root', 'superuser']:
+        raise ValidationError('This username is reserved.')
+
+# Using custom validator in a form
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[
+        DataRequired(),
+        Length(min=3, max=20),
+        validate_username
+    ])
+    # other fields...
+</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Validation within Form Class</h3>
+            <p class="mb-2">Add validation methods to your form class for complex validation rules:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python">class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('Username already taken. Please choose a different one.')
+</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">File Uploads</h2>
+            <p class="text-lg mb-4">
+                Flask-WTF makes it easy to handle file uploads in your forms.
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Creating a File Upload Form</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># forms.py
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+from wtforms import SubmitField
+
+class UploadForm(FlaskForm):
+    photo = FileField('Upload Photo', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png', 'jpeg'], 'Images only!')
+    ])
+    submit = SubmitField('Upload')
+</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Processing File Uploads</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># routes.py
+import os
+from werkzeug.utils import secure_filename
+from flask import current_app
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    form = UploadForm()
+    
+    if form.validate_on_submit():
+        f = form.photo.data
+        filename = secure_filename(f.filename)
+        upload_path = os.path.join(current_app.root_path, 'static', 'uploads')
+        
+        # Ensure the upload directory exists
+        os.makedirs(upload_path, exist_ok=True)
+        
+        # Save the file
+        f.save(os.path.join(upload_path, filename))
+        
+        flash('File uploaded successfully!', 'success')
+        return redirect(url_for('upload'))
+    
+    return render_template('upload.html', form=form)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">AJAX Forms</h2>
+            
+            <p class="mb-4">You can use JavaScript to submit forms asynchronously without page reloads for a better user experience.</p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. HTML Form with AJAX</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/ajax_form.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    &lt;h1>Contact Us&lt;/h1>
+    &lt;form id="contact-form" method="POST" action="{{ url_for('api.contact') }}">
+        {{ form.csrf_token }}
+        
+        &lt;div class="form-group">
+            {{ form.name.label }}
+            {{ form.name(class="form-control") }}
+            &lt;div class="error-message" id="name-error">&lt;/div>
+        &lt;/div>
+        
+        &lt;div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
+            &lt;div class="error-message" id="email-error">&lt;/div>
+        &lt;/div>
+        
+        &lt;div class="form-group">
+            {{ form.message.label }}
+            {{ form.message(class="form-control") }}
+            &lt;div class="error-message" id="message-error">&lt;/div>
+        &lt;/div>
+        
+        &lt;button type="submit" class="btn btn-primary">Send Message&lt;/button>
+    &lt;/form>
+    
+    &lt;div id="form-success" class="alert alert-success mt-3" style="display: none;">
+        Your message has been sent!
+    &lt;/div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    &lt;script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('contact-form');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Reset error messages
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.textContent = '';
+                });
+                
+                // Get form data
+                const formData = new FormData(form);
+                
+                // Submit form via AJAX
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        document.getElementById('form-success').style.display = 'block';
+                        form.reset();
+                    } else {
+                        // Display validation errors
+                        if (data.errors) {
+                            Object.keys(data.errors).forEach(field => {
+                                const errorEl = document.getElementById(`${field}-error`);
+                                if (errorEl) {
+                                    errorEl.textContent = data.errors[field].join(', ');
+                                }
+                            });
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    &lt;/script>
+{% endblock %}{% endraw %}</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. API Route for AJAX Form</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># routes/api.py
+from flask import Blueprint, request, jsonify
+from .forms import ContactForm
+
+api = Blueprint('api', __name__)
+
+@api.route('/api/contact', methods=['POST'])
+def contact():
+    form = ContactForm()
+    
+    if request.is_xhr:  # Check if it's an AJAX request
+        if form.validate_on_submit():
+            # Process form data
+            # ...
+            
+            return jsonify({
+                'success': True,
+                'message': 'Your message has been sent!'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'errors': form.errors
+            })
+    
+    # Handle non-AJAX request (fallback)
+    if form.validate_on_submit():
+        # Process form data
+        # ...
+        
+        flash('Your message has been sent!', 'success')
+        return redirect(url_for('contact'))
+    
+    return render_template('contact.html', form=form)
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Security Considerations</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th>Risk</th>
+                            <th>Prevention</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cross-Site Request Forgery (CSRF)</td>
+                            <td>Always include the CSRF token in your forms (<code>{{ form.csrf_token }}</code>)</td>
+                        </tr>
+                        <tr>
+                            <td>Cross-Site Scripting (XSS)</td>
+                            <td>Validate and sanitize user input before displaying it</td>
+                        </tr>
+                        <tr>
+                            <td>SQL Injection</td>
+                            <td>Use parameterized queries or ORM (e.g., SQLAlchemy) for database operations</td>
+                        </tr>
+                        <tr>
+                            <td>Malicious File Uploads</td>
+                            <td>Validate file extensions, content types, and scan for malware</td>
+                        </tr>
+                        <tr>
+                            <td>Mass Assignment</td>
+                            <td>Explicitly specify which form fields to accept when processing forms</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="alert alert-warning mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <div class="font-bold">Security Warning</div>
+                    <div>Never trust data coming from the client. Always validate and sanitize user input on the server side, even if you have client-side validation.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Best Practices</h2>
+            <ul class="list-disc list-inside space-y-2 mb-4">
+                <li><span class="font-semibold">Organize forms in separate modules:</span> Keep your forms organized in dedicated modules (e.g., forms.py)</li>
+                <li><span class="font-semibold">Use macros for form rendering:</span> Create reusable macros for rendering form fields to avoid repetition</li>
+                <li><span class="font-semibold">Provide clear error messages:</span> Help users understand what went wrong and how to fix it</li>
+                <li><span class="font-semibold">Use appropriate field types:</span> WTForms provides many field types for different data (e.g., EmailField, IntegerField)</li>
+                <li><span class="font-semibold">Add client-side validation:</span> Enhance user experience with immediate feedback, but always rely on server-side validation</li>
+                <li><span class="font-semibold">Use form inheritance:</span> Create base forms with common fields and inherit from them</li>
+                <li><span class="font-semibold">Test your forms:</span> Write unit tests for your form validation logic</li>
+                <li><span class="font-semibold">Handle form errors gracefully:</span> Display validation errors clearly and preserve user input</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="flex justify-between">
+        <a href="{{ url_for('main.database_integration') }}" class="btn btn-outline">Previous: Database Integration</a>
+        <a href="{{ url_for('main.user_authentication') }}" class="btn btn-primary">Next: User Authentication</a>
     </div>
 </div>
 {% endblock %}

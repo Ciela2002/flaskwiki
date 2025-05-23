@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Code de vérification AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3470715885235094"
+     crossorigin="anonymous"></script>
 <div class="container mx-auto px-4 py-8">
     <div class="prose dark:prose-invert max-w-none">
         <h1 class="text-3xl font-bold text-primary mb-6">Static Files in Flask</h1>
+
         <p class="lead mb-6">
             Static files like CSS, JavaScript, and images are essential for creating a complete web application.
             Flask makes it easy to serve these files with its built-in static file handling.
         </p>
+
         <div class="alert alert-info mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <div>
@@ -16,12 +21,17 @@
             </div>
         </div>
     </div>
+    
+    {% include 'partials/adsense_mid.html' %}
+
     <div class="card bg-base-200 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-secondary text-2xl mb-4">Setting Up Your Static Files Directory</h2>
+            
             <p class="mb-4">
                 The standard structure for static files in a Flask application is:
             </p>
+            
             <div class="mockup-code mb-4">
                 <pre><code>your_app/
 ├── static/
@@ -38,31 +48,38 @@
 │   └── ...
 └── app.py</code></pre>
             </div>
+            
             <p class="mb-4">
                 When you set up your Flask application, the static directory is automatically recognized, and Flask will serve files from this directory when accessed via the <code>/static/</code> URL path.
             </p>
         </div>
     </div>
+
     <div class="card bg-base-200 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-secondary text-2xl mb-4">Using Static Files in Templates</h2>
+            
             <p class="mb-4">
                 To reference static files in your templates, use the <code>url_for()</code> function with the <code>static</code> endpoint:
             </p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">Linking CSS Files</h3>
             <div class="mockup-code mb-4">
-                <pre><code class="language-html">&lt;!-- In your HTML template --&gt;
+                <pre><code class="language-html">&lt;!-- In your HTML template -->
 &lt;link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"&gt;</code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">Including JavaScript Files</h3>
             <div class="mockup-code mb-4">
-                <pre><code class="language-html">&lt;!-- At the bottom of your HTML template --&gt;
+                <pre><code class="language-html">&lt;!-- At the bottom of your HTML template -->
 &lt;script src="{{ url_for('static', filename='js/script.js') }}"&gt;&lt;/script&gt;</code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">Displaying Images</h3>
             <div class="mockup-code mb-4">
                 <pre><code class="language-html">&lt;img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo"&gt;</code></pre>
             </div>
+            
             <p class="text-lg mt-4">
                 Using <code>url_for()</code> is recommended over hardcoding paths because:
             </p>
@@ -73,16 +90,84 @@
             </ul>
         </div>
     </div>
+
     <div class="card bg-base-200 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-secondary text-2xl mb-4">Customizing the Static Files Directory</h2>
+            
             <p class="mb-4">
                 You can customize the location of your static files by changing the Flask app configuration:
             </p>
+            
             <div class="mockup-code mb-4">
                 <pre><code class="language-python">from flask import Flask
 
-app = Flask(__name__, ...)</code></pre>
+app = Flask(__name__, 
+    static_folder='path/to/static',  # Change static files directory
+    static_url_path='/assets'        # Change URL prefix (default is /static)
+)
+
+# Now files will be served from /assets/* instead of /static/*</code></pre>
+            </div>
+            
+            <p class="mb-4">
+                After this change, you would reference files like this:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">&lt;link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"&gt;</code></pre>
+            </div>
+            
+            <p class="mb-4">
+                Note that while the URL path changes, the way you reference files with <code>url_for()</code> remains the same, which is one of its benefits.
+            </p>
+        </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Efficient Static File Serving</h2>
+            
+            <p class="mb-4">
+                For development, Flask's built-in static file serving is fine. However, for production, you should use a dedicated web server or CDN to serve static files for better performance.
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Some Options for Production:</h3>
+            <ul class="list-disc list-inside pl-4 mb-4">
+                <li>Configure Nginx or Apache to serve your static files directly</li>
+                <li>Use a CDN like Cloudflare, AWS CloudFront, or Google Cloud CDN</li>
+                <li>Use Flask-Assets or similar extensions to minify and bundle your static files</li>
+            </ul>
+            
+            <div class="alert alert-warning mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <div class="font-bold">Production Warning</div>
+                    <div>Never use Flask's built-in server or static file handling in production environments.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Best Practices</h2>
+            
+            <ol class="list-decimal list-inside space-y-2 mb-4">
+                <li>Organize your static files by type (css, js, img, etc.)</li>
+                <li>Use versioning or fingerprinting for cache busting</li>
+                <li>Minify CSS and JavaScript for production</li>
+                <li>Optimize images to reduce file size</li>
+                <li>Consider using a CSS preprocessor like SASS or LESS for large projects</li>
+                <li>Use a JavaScript build system like Webpack for complex front-end code</li>
+                <li>Always use <code>url_for('static', filename='...')</code> rather than hardcoded paths</li>
+            </ol>
+            
+            <div class="mt-6">
+                <div class="flex justify-between">
+                    <a href="{{ url_for('main.css_integration') }}" class="btn btn-outline">Previous: CSS Integration</a>
+                    <a href="{{ url_for('main.javascript_in_flask') }}" class="btn btn-primary">Next: JavaScript in Flask</a>
+                </div>
             </div>
         </div>
     </div>

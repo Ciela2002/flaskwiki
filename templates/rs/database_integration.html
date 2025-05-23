@@ -3,6 +3,7 @@
 {% block content %}
 <div class="prose prose-lg max-w-none">
     <h1 class="text-4xl font-bold text-primary mb-6">Database Integration in Flask</h1>
+    
     <div class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Introduction to Databases in Flask</h2>
@@ -14,12 +15,16 @@
             </p>
         </div>
     </div>
+    
+    {% include 'partials/adsense_mid.html' %}
+    
     <div class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Database Options for Flask</h2>
             <p class="text-lg mb-4">
                 Flask can work with various database systems, each with its own strengths:
             </p>
+            
             <div class="overflow-x-auto">
                 <table class="table table-zebra w-full">
                     <thead>
@@ -53,21 +58,25 @@
                     </tbody>
                 </table>
             </div>
+            
             <p class="text-lg mt-4">
                 For most Flask applications, especially when starting out, a relational database like SQLite (for development) or PostgreSQL (for production) is a good choice.
             </p>
         </div>
     </div>
+    
     <div class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Flask-SQLAlchemy</h2>
             <p class="text-lg mb-4">
                 Flask-SQLAlchemy is an extension that adds support for SQLAlchemy to your Flask application. SQLAlchemy is a powerful ORM (Object Relational Mapper) that allows you to interact with your database using Python objects instead of writing raw SQL.
             </p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">Installation</h3>
             <div class="mockup-code mb-4">
                 <pre><code>pip install Flask-SQLAlchemy</code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">Basic Configuration</h3>
             <div class="mockup-code mb-4">
                 <pre><code># In your config.py
@@ -89,9 +98,348 @@ db = SQLAlchemy()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    db.init_app(app)</code></pre>
+    
+    db.init_app(app)
+    
+    # Create tables if they don't exist
+    with app.app_context():
+        db.create_all()
+    
+    return app</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                The <code>SQLALCHEMY_DATABASE_URI</code> configuration variable tells Flask-SQLAlchemy which database to connect to. For different database systems, the URI format will be different.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Defining Models</h2>
+            <p class="text-lg mb-4">
+                Models are Python classes that represent tables in your database. Each attribute of the class represents a column in the table.
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code># In app/models.py
+from app import db
+from datetime import datetime
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    
+    def __repr__(self):
+        return f'&lt;User {self.username}>'
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
+    def __repr__(self):
+        return f'&lt;Post {self.title}>'</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                In this example, we've defined two models: <code>User</code> and <code>Post</code>. The <code>User</code> model has a one-to-many relationship with the <code>Post</code> model, which is defined using <code>db.relationship</code> and <code>db.ForeignKey</code>.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Common Column Types</h2>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>SQLAlchemy Type</th>
+                            <th>Python Type</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">db.Integer</td>
+                            <td>int</td>
+                            <td>Regular integer</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">db.String(size)</td>
+                            <td>str</td>
+                            <td>String with maximum length</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">db.Text</td>
+                            <td>str</td>
+                            <td>Unlimited length text</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">db.DateTime</td>
+                            <td>datetime</td>
+                            <td>Date and time</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">db.Float</td>
+                            <td>float</td>
+                            <td>Floating-point number</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">db.Boolean</td>
+                            <td>bool</td>
+                            <td>True/False value</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">db.PickleType</td>
+                            <td>Any</td>
+                            <td>Stores Python objects (serialized)</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">db.LargeBinary</td>
+                            <td>bytes</td>
+                            <td>Binary data (files, images)</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Database Operations</h2>
+            <p class="text-lg mb-4">
+                Once you've defined your models, you can perform various operations on your database:
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Creating Records</h3>
+            <div class="mockup-code mb-4">
+                <pre><code>from app import db
+from app.models import User, Post
+
+# Create a new user
+user = User(username='john', email='john@example.com')
+user.set_password('password')  # Assuming you have a set_password method
+
+# Add to the session and commit
+db.session.add(user)
+db.session.commit()
+
+# Create a post for this user
+post = Post(title='My First Post', body='This is the post content', author=user)
+db.session.add(post)
+db.session.commit()</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Querying Records</h3>
+            <div class="mockup-code mb-4">
+                <pre><code># Get all users
+users = User.query.all()
+
+# Get user by ID
+user = User.query.get(1)
+
+# Filter users
+users = User.query.filter_by(username='john').all()
+
+# More complex filters
+users = User.query.filter(User.email.endswith('@example.com')).all()
+
+# Order results
+recent_posts = Post.query.order_by(Post.timestamp.desc()).all()
+
+# Limit results
+recent_posts = Post.query.order_by(Post.timestamp.desc()).limit(5).all()
+
+# Pagination
+posts = Post.query.paginate(page=1, per_page=10)
+for post in posts.items:
+    print(post.title)</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Updating Records</h3>
+            <div class="mockup-code mb-4">
+                <pre><code># Get the user
+user = User.query.get(1)
+
+# Update attributes
+user.username = 'new_username'
+
+# Commit changes
+db.session.commit()</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Deleting Records</h3>
+            <div class="mockup-code mb-4">
+                <pre><code># Get the user
+user = User.query.get(1)
+
+# Delete the user
+db.session.delete(user)
+db.session.commit()</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Relationships</h2>
+            <p class="text-lg mb-4">
+                SQLAlchemy makes it easy to define relationships between models:
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="bg-base-200 p-4 rounded-lg">
+                    <h3 class="text-xl font-semibold text-primary mb-2">One-to-Many</h3>
+                    <div class="mockup-code mb-2">
+                        <pre><code>class User(db.Model):
+    # ...
+    posts = db.relationship('Post', backref='author', lazy='dynamic')
+
+class Post(db.Model):
+    # ...
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))</code></pre>
+                    </div>
+                    <p>A user can have many posts, but each post belongs to one user.</p>
+                </div>
+                
+                <div class="bg-base-200 p-4 rounded-lg">
+                    <h3 class="text-xl font-semibold text-primary mb-2">Many-to-Many</h3>
+                    <div class="mockup-code mb-2">
+                        <pre><code># Association table
+tags = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id'))
+)
+
+class Post(db.Model):
+    # ...
+    tags = db.relationship('Tag', secondary=tags,
+                          backref=db.backref('posts', lazy='dynamic'))
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)</code></pre>
+                    </div>
+                    <p>A post can have many tags, and a tag can be associated with many posts.</p>
+                </div>
+                
+                <div class="bg-base-200 p-4 rounded-lg">
+                    <h3 class="text-xl font-semibold text-primary mb-2">One-to-One</h3>
+                    <div class="mockup-code mb-2">
+                        <pre><code>class User(db.Model):
+    # ...
+    profile = db.relationship('Profile', backref='user',
+                             uselist=False)
+
+class Profile(db.Model):
+    # ...
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))</code></pre>
+                    </div>
+                    <p>A user has exactly one profile, and a profile belongs to exactly one user.</p>
+                </div>
+                
+                <div class="bg-base-200 p-4 rounded-lg">
+                    <h3 class="text-xl font-semibold text-primary mb-2">Self-Referential</h3>
+                    <div class="mockup-code mb-2">
+                        <pre><code>class Employee(db.Model):
+    # ...
+    manager_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
+    reports = db.relationship('Employee', backref=db.backref('manager', remote_side=[id]))</code></pre>
+                    </div>
+                    <p>An employee can have one manager, and a manager can have many reports (employees).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Database Migrations with Flask-Migrate</h2>
+            <p class="text-lg mb-4">
+                As your application evolves, you'll need to make changes to your database schema. Flask-Migrate (based on Alembic) helps you manage these changes:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code># Install Flask-Migrate
+pip install Flask-Migrate
+
+# In your app/__init__.py
+from flask_migrate import Migrate
+
+db = SQLAlchemy()
+migrate = Migrate()
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    
+    db.init_app(app)
+    migrate.init_app(app, db)
+    
+    return app</code></pre>
+            </div>
+            
+            <p class="text-lg mb-4">
+                After setting up Flask-Migrate, you can use the following commands to manage migrations:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code># Initialize migrations (first time only)
+flask db init
+
+# Create a migration
+flask db migrate -m "Initial migration"
+
+# Apply migrations
+flask db upgrade
+
+# Rollback a migration
+flask db downgrade</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                Migrations are stored in a directory called <code>migrations</code> in your project, and they track changes to your database schema over time.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Best Practices</h2>
+            <ul class="list-disc list-inside space-y-2 mb-4">
+                <li><span class="font-semibold">Use environment variables for database URIs:</span> Don't hardcode database credentials in your code</li>
+                <li><span class="font-semibold">Use migrations:</span> Always use Flask-Migrate to manage database schema changes</li>
+                <li><span class="font-semibold">Keep models organized:</span> For larger applications, consider splitting models into separate files</li>
+                <li><span class="font-semibold">Use transactions:</span> Wrap related database operations in transactions to ensure atomicity</li>
+                <li><span class="font-semibold">Validate data:</span> Validate data before inserting it into the database</li>
+                <li><span class="font-semibold">Handle errors:</span> Properly handle database errors to prevent application crashes</li>
+                <li><span class="font-semibold">Use indexes:</span> Add indexes to columns that are frequently used in queries</li>
+                <li><span class="font-semibold">Test with real databases:</span> Test your application with the same database system you'll use in production</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="alert alert-info shadow-lg mb-8">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <h3 class="font-bold">Security Note</h3>
+                <div class="text-sm">Always sanitize user input before using it in database queries to prevent SQL injection attacks. SQLAlchemy helps with this by using parameterized queries, but you should still be careful with raw SQL if you use it.</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-between">
+        <a href="{{ url_for('main.javascript_in_flask') }}" class="btn btn-outline">Previous: JavaScript in Flask</a>
+        <a href="{{ url_for('main.forms_validation') }}" class="btn btn-primary">Next: Forms & Validation</a>
     </div>
 </div>
 {% endblock %}

@@ -1,8 +1,19 @@
-{% extends "base.html" %}
+{% extends "tutorial_base.html" %}
 
-{% block content %}
-<div class="prose prose-lg max-w-none">
-    <h1 class="text-4xl font-bold text-primary mb-6">Flask Templates Basics</h1>
+{% set toc = [
+    {'id': 'introduction', 'title': 'Introduction to Flask Templates', 'subsections': []},
+    {'id': 'basic-usage', 'title': 'Basic Template Usage', 'subsections': []},
+    {'id': 'template-syntax', 'title': 'Template Syntax', 'subsections': []},
+    {'id': 'template-inheritance', 'title': 'Template Inheritance', 'subsections': []},
+    {'id': 'template-filters', 'title': 'Template Filters', 'subsections': []},
+    {'id': 'template-macros', 'title': 'Macros', 'subsections': []},
+    {'id': 'template-context', 'title': 'Template Context', 'subsections': []},
+    {'id': 'best-practices', 'title': 'Best Practices', 'subsections': []}
+] %}
+
+{% block tutorial_content %}
+<h1 class="text-4xl font-bold text-primary mb-6">Flask Templates Basics</h1>
+    
     <div class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Introduction to Flask Templates</h2>
@@ -14,12 +25,14 @@
             </p>
         </div>
     </div>
-    <div class="card bg-base-300 shadow-xl mb-8">
+    
+    <section id="basic-usage" class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Basic Template Usage</h2>
             <p class="text-lg mb-4">
                 Templates in Flask are stored in the <code>templates</code> directory of your application. Here's how to render a simple template:
             </p>
+            
             <div class="mockup-code mb-4">
                 <pre><code class="language-python"># In your Flask route
 from flask import render_template
@@ -28,31 +41,36 @@ from flask import render_template
 def index():
     return render_template('index.html', title='Home Page', user='John')</code></pre>
             </div>
+            
             <p class="text-lg mb-4">
                 And here's what your template might look like:
             </p>
+            
             <div class="mockup-code mb-4">
-                <pre><code class="language-html">&lt;!-- templates/index.html --&gt;
-&lt;html&gt;
-    &lt;head&gt;
-        &lt;title&gt;{{ title }}&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;h1&gt;Hello, {{ user }}!&lt;/h1&gt;
-    &lt;/body&gt;
-&lt;/html&gt;</code></pre>
+                <pre><code class="language-html">&lt;!-- templates/index.html -->
+&lt;html>
+    &lt;head>
+        &lt;title>{{ title }}&lt;/title>
+    &lt;/head>
+    &lt;body>
+        &lt;h1>Hello, {{ user }}!&lt;/h1>
+    &lt;/body>
+&lt;/html></code></pre>
             </div>
+            
             <p class="text-lg">
                 In this example, <code>{{ title }}</code> and <code>{{ user }}</code> are placeholders that will be replaced with the values you pass to <code>render_template()</code>.
             </p>
         </div>
     </div>
-    <div class="card bg-base-300 shadow-xl mb-8">
+    
+    <section id="template-syntax" class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Template Syntax</h2>
             <p class="text-lg mb-4">
                 Jinja2 templates use a special syntax for various operations:
             </p>
+            
             <div class="overflow-x-auto">
                 <table class="table table-zebra w-full">
                     <thead>
@@ -64,29 +82,365 @@ def index():
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="font-semibold">{{ '{{ ... }}' }}</td>
+                            <td class="font-semibold">{% raw %}{{ ... }}{% endraw %}</td>
                             <td>Output expressions (variables, function calls)</td>
-                            <td><code>{{ '{{ user.name }}' }}</code></td>
+                            <td><code>{% raw %}{{ user.name }}{% endraw %}</code></td>
                         </tr>
                         <tr>
-                            <td class="font-semibold">{% '{% ... %}' %}</td>
+                            <td class="font-semibold">{% raw %}{% ... %}{% endraw %}</td>
                             <td>Control structures (if, for, etc.)</td>
-                            <td><code>{% '{% if user %}...{% endif %}' %}</code></td>
+                            <td><code>{% raw %}{% if user %}...{% endif %}{% endraw %}</code></td>
                         </tr>
                         <tr>
-                            <td class="font-semibold">{# '{# ... #}' #}</td>
+                            <td class="font-semibold">{% raw %}{# ... #}{% endraw %}</td>
                             <td>Comments (not included in output)</td>
-                            <td><code>{# '{# This is a comment #}' #}</code></td>
+                            <td><code>{% raw %}{# This is a comment #}{% endraw %}</code></td>
                         </tr>
                         <tr>
-                            <td class="font-semibold">#</td>
-                            <td>Line statements (alternative to {% '{% ... %}' %})</td>
-                            <td><code># for item in items</code></td>
+                            <td class="font-semibold">{% raw %}#{% endraw %}</td>
+                            <td>Line statements (alternative to {% raw %}{% ... %}{% endraw %})</td>
+                            <td><code>{% raw %}# for item in items{% endraw %}</code></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Control Structures</h2>
+            <p class="text-lg mb-4">
+                Jinja2 provides several control structures for conditional rendering and iteration:
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Conditionals</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}{% if user %}
+    &lt;h1>Hello, {{ user.name }}!&lt;/h1>
+{% elif guest %}
+    &lt;h1>Hello, Guest!&lt;/h1>
+{% else %}
+    &lt;h1>Hello, Stranger!&lt;/h1>
+{% endif %}{% endraw %}</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Loops</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;ul>
+{% for item in items %}
+    &lt;li>{{ item.name }}&lt;/li>
+{% endfor %}
+&lt;/ul>
+
+{% for item in items %}
+    {{ item.name }}{% if not loop.last %}, {% endif %}
+{% endfor %}{% endraw %}</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                The <code>loop</code> variable provides information about the current iteration, such as <code>loop.index</code> (1-based index), <code>loop.index0</code> (0-based index), <code>loop.first</code>, <code>loop.last</code>, and more.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Template Inheritance</h2>
+            <p class="text-lg mb-4">
+                One of the most powerful features of Jinja2 is template inheritance, which allows you to define a base template with common elements and extend it in child templates.
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Base Template</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/base.html -->
+&lt;html>
+    &lt;head>
+        &lt;title>{% block title %}Default Title{% endblock %}&lt;/title>
+        &lt;link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        {% block styles %}{% endblock %}
+    &lt;/head>
+    &lt;body>
+        &lt;header>
+            &lt;nav>
+                &lt;a href="{{ url_for('index') }}">Home&lt;/a>
+                &lt;a href="{{ url_for('about') }}">About&lt;/a>
+            &lt;/nav>
+        &lt;/header>
+        
+        &lt;main>
+            {% block content %}{% endblock %}
+        &lt;/main>
+        
+        &lt;footer>
+            &lt;p>&copy; {{ now.year }} My Flask App&lt;/p>
+        &lt;/footer>
+        
+        &lt;script src="{{ url_for('static', filename='js/main.js') }}">&lt;/script>
+        {% block scripts %}{% endblock %}
+    &lt;/body>
+&lt;/html>{% endraw %}</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Child Template</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+    &lt;h1>Welcome to My Flask App&lt;/h1>
+    &lt;p>This is the home page.&lt;/p>
+{% endblock %}
+
+{% block scripts %}
+    &lt;script src="{{ url_for('static', filename='js/home.js') }}">&lt;/script>
+{% endblock %}{% endraw %}</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                In this example, the child template <code>index.html</code> extends the base template <code>base.html</code> and overrides specific blocks. This approach keeps your templates DRY (Don't Repeat Yourself) and makes maintenance easier.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Including Templates</h2>
+            <p class="text-lg mb-4">
+                For reusable components that don't fit the inheritance model, you can use the <code>include</code> statement:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/components/message.html -->
+&lt;div class="message {% if type %}message-{{ type }}{% endif %}">
+    {{ message }}
+&lt;/div>
+
+&lt;!-- Using the component in another template -->
+{% include 'components/message.html' with message='Hello, World!', type='info' %}{% endraw %}</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                This approach is useful for small, reusable components like alerts, cards, or form fields.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Macros</h2>
+            <p class="text-lg mb-4">
+                Macros are like functions in Jinja2 templates. They allow you to define reusable template fragments with parameters:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">{% raw %}&lt;!-- templates/macros.html -->
+{% macro input(name, label, value='', type='text') %}
+    &lt;div class="form-group">
+        &lt;label for="{{ name }}">{{ label }}&lt;/label>
+        &lt;input type="{{ type }}" name="{{ name }}" id="{{ name }}" value="{{ value }}">
+    &lt;/div>
+{% endmacro %}
+
+&lt;!-- Using the macro in another template -->
+{% from 'macros.html' import input %}
+
+&lt;form method="post">
+    {{ input('username', 'Username') }}
+    {{ input('password', 'Password', type='password') }}
+    &lt;button type="submit">Submit&lt;/button>
+&lt;/form>{% endraw %}</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                Macros are particularly useful for form elements, UI components, or any repeating pattern in your templates.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Filters</h2>
+            <p class="text-lg mb-4">
+                Filters in Jinja2 transform the values of variables. They are applied using the pipe symbol (<code>|</code>):
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Filter</th>
+                            <th>Purpose</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">safe</td>
+                            <td>Mark a string as safe HTML (no escaping)</td>
+                            <td><code>{% raw %}{{ content|safe }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">capitalize</td>
+                            <td>Capitalize the first character</td>
+                            <td><code>{% raw %}{{ name|capitalize }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">lower</td>
+                            <td>Convert to lowercase</td>
+                            <td><code>{% raw %}{{ text|lower }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">upper</td>
+                            <td>Convert to uppercase</td>
+                            <td><code>{% raw %}{{ text|upper }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">trim</td>
+                            <td>Remove leading/trailing whitespace</td>
+                            <td><code>{% raw %}{{ text|trim }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">striptags</td>
+                            <td>Remove HTML tags</td>
+                            <td><code>{% raw %}{{ html|striptags }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">join</td>
+                            <td>Join a list with a delimiter</td>
+                            <td><code>{% raw %}{{ list|join(', ') }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">default</td>
+                            <td>Provide a default value</td>
+                            <td><code>{% raw %}{{ name|default('Guest') }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">length</td>
+                            <td>Get the length of a string or list</td>
+                            <td><code>{% raw %}{{ list|length }}{% endraw %}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">truncate</td>
+                            <td>Truncate a string to a specified length</td>
+                            <td><code>{% raw %}{{ text|truncate(100) }}{% endraw %}</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <p class="text-lg mt-4">
+                You can chain multiple filters together: <code>{% raw %}{{ name|lower|capitalize }}{% endraw %}</code>
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Custom Filters and Functions</h2>
+            <p class="text-lg mb-4">
+                You can create custom filters and functions to extend Jinja2's capabilities:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python"># In your Flask app
+@app.template_filter('datetime_format')
+def datetime_format(value, format='%Y-%m-%d'):
+    """Format a datetime object."""
+    return value.strftime(format)
+
+@app.context_processor
+def utility_processor():
+    def format_price(amount, currency='$'):
+        """Format a price with currency symbol."""
+        return f"{currency}{amount:.2f}"
+    return dict(format_price=format_price)
+
+# In your template
+{% raw %}&lt;p>Date: {{ post.created_at|datetime_format('%B %d, %Y') }}&lt;/p>
+&lt;p>Price: {{ format_price(product.price, '€') }}&lt;/p>{% endraw %}</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                Custom filters and functions can help you keep your templates clean by moving complex logic to your Python code.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Template Organization</h2>
+            <p class="text-lg mb-4">
+                As your application grows, organizing your templates becomes important. Here's a recommended structure:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code class="language-bash">templates/
+├── base.html                  # Base template with common elements
+├── macros.html                # Reusable macros
+├── components/                # Reusable components
+│   ├── navbar.html
+│   ├── footer.html
+│   └── sidebar.html
+├── pages/                     # Page-specific templates
+│   ├── home.html
+│   ├── about.html
+│   └── contact.html
+├── auth/                      # Authentication templates
+│   ├── login.html
+│   └── register.html
+└── errors/                    # Error pages
+    ├── 404.html
+    └── 500.html</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                This structure keeps related templates together and makes it easier to find and maintain them.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Best Practices</h2>
+            <ul class="list-disc list-inside space-y-2 mb-4">
+                <li><span class="font-semibold">Use template inheritance:</span> Create a base template with common elements and extend it in child templates</li>
+                <li><span class="font-semibold">Keep logic minimal:</span> Move complex logic to your Python code and keep templates focused on presentation</li>
+                <li><span class="font-semibold">Use macros for repetitive elements:</span> Create macros for form fields, cards, and other repeating UI components</li>
+                <li><span class="font-semibold">Organize templates logically:</span> Group related templates in subdirectories</li>
+                <li><span class="font-semibold">Be consistent with naming:</span> Use consistent naming conventions for templates, blocks, and macros</li>
+                <li><span class="font-semibold">Comment your templates:</span> Add comments to explain complex sections or non-obvious code</li>
+                <li><span class="font-semibold">Use url_for() for links:</span> Always use <code>url_for()</code> to generate URLs rather than hardcoding them</li>
+                <li><span class="font-semibold">Consider security:</span> Be careful with the <code>safe</code> filter and only use it when necessary</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="alert alert-info mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+                <div class="font-bold">Important</div>
+                <div>Templates are a core feature of Flask. Understanding them is essential for building dynamic web applications.</div>
+            </div>
+        </div>
+        
+        {% include 'partials/adsense_mid.html' %}
+        
+    <div class="alert alert-warning shadow-lg mb-8">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <div>
+                <h3 class="font-bold">Security Warning</h3>
+                <div class="text-sm">Always escape user-generated content to prevent XSS attacks. Jinja2 does this automatically for variables in <code>{% raw %}{{ }}{% endraw %}</code> blocks, but be careful when using the <code>{% raw %}safe{% endraw %}</code> filter.</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-between">
+        <a href="{{ url_for('main.wiki_index') }}" class="btn btn-outline">Back to Wiki Index</a>
+        <a href="{{ url_for('main.css_integration') }}" class="btn btn-primary">Next: CSS Integration</a>
     </div>
 </div>
 {% endblock %}

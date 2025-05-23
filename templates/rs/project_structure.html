@@ -1,4 +1,416 @@
 {% extends "base.html" %}
+
 {% block content %}
-{{ ... }}
+<div class="prose prose-lg max-w-none">
+    <h1 class="text-4xl font-bold text-primary mb-6">Flask Project Structure</h1>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Why Project Structure Matters</h2>
+            <p class="text-lg">
+                A well-organized project structure is crucial for Flask applications, especially as they grow in complexity. A good structure makes your code more maintainable, scalable, and easier to understand for new developers joining your project.
+            </p>
+            <p class="text-lg">
+                While Flask is flexible and doesn't enforce a specific project structure, there are several conventions and best practices that have emerged in the Flask community.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Basic Project Structure</h2>
+            <p class="text-lg mb-4">
+                For small to medium-sized Flask applications, the following structure is recommended:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>my_flask_app/
+├── app/
+│   ├── __init__.py          # Initialize the app and bring together components
+│   ├── routes/              # Route definitions
+│   │   ├── __init__.py
+│   │   ├── main.py          # Main routes
+│   │   └── auth.py          # Authentication routes
+│   ├── models.py            # Database models
+│   ├── forms.py             # Form classes using Flask-WTF
+│   ├── static/              # Static files (CSS, JS, images)
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── img/
+│   └── templates/           # Jinja2 templates
+│       ├── base.html        # Base template with common elements
+│       ├── index.html       # Home page
+│       └── auth/            # Authentication templates
+│           ├── login.html
+│           └── register.html
+├── config.py                # Configuration settings
+├── requirements.txt         # Project dependencies
+├── run.py                   # Application entry point
+└── README.md                # Project documentation</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                This structure separates concerns and follows the Model-View-Controller (MVC) pattern, which is a common approach in web development.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Key Components Explained</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">app/</td>
+                            <td>The main application package containing all your application code.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">app/__init__.py</td>
+                            <td>Initializes your Flask application and brings together various components.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">app/routes/</td>
+                            <td>Contains route definitions organized by feature or function.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">app/models.py</td>
+                            <td>Defines database models using an ORM like SQLAlchemy.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">app/static/</td>
+                            <td>Contains static files like CSS, JavaScript, and images.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">app/templates/</td>
+                            <td>Contains Jinja2 templates for rendering HTML.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">config.py</td>
+                            <td>Configuration settings for different environments (development, testing, production).</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">run.py</td>
+                            <td>Entry point for running the application.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">The Application Factory Pattern</h2>
+            <p class="text-lg mb-4">
+                For larger applications, the "Application Factory" pattern is recommended. This pattern creates the application object inside a function rather than at the module level, which allows for multiple instances of the app and easier testing.
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code># app/__init__.py
+from flask import Flask
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    
+    # Initialize extensions
+    db.init_app(app)
+    migrate.init_app(app, db)
+    
+    # Register blueprints
+    from app.routes.main import main
+    app.register_blueprint(main)
+    
+    return app</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                This approach is more flexible and makes your application more modular. It's especially useful when you need to create different instances of your application with different configurations, such as for testing.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Using Blueprints</h2>
+            <p class="text-lg mb-4">
+                Blueprints are a powerful feature in Flask that allow you to organize your application into distinct components. They're especially useful for larger applications with multiple features.
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code># app/routes/main.py
+from flask import Blueprint, render_template
+
+main = Blueprint('main', __name__)
+
+@main.route('/')
+def index():
+    return render_template('index.html')</code></pre>
+            </div>
+            
+            <p class="text-lg">
+                Blueprints help you organize related routes, templates, and static files together, making your codebase more maintainable as it grows.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Best Practices</h2>
+            <ul class="list-disc list-inside space-y-2 mb-4">
+                <li><span class="font-semibold">Separation of concerns:</span> Keep different parts of your application separate (routes, models, templates).</li>
+                <li><span class="font-semibold">Use blueprints:</span> Organize your application into logical components using blueprints.</li>
+                <li><span class="font-semibold">Configuration:</span> Keep configuration separate from application code and use environment variables for sensitive information.</li>
+                <li><span class="font-semibold">Testing:</span> Structure your application to make testing easier, using the application factory pattern.</li>
+                <li><span class="font-semibold">Documentation:</span> Include a README.md file with setup instructions and project information.</li>
+                <li><span class="font-semibold">Dependencies:</span> Use a requirements.txt file to track dependencies.</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Create Project Structure Scripts</h2>
+            <p class="text-lg mb-4">
+                You can use the following simple scripts to automatically create a basic Flask project structure in your current directory. These scripts will create all the necessary folders and empty files to help you get started quickly.
+            </p>
+            
+            <div class="mb-4">
+                <div class="collapse collapse-arrow bg-base-300 mb-4 border border-base-content border-opacity-20">
+                    <input type="checkbox" class="peer" checked /> 
+                    <div class="collapse-title bg-primary text-primary-content peer-checked:bg-primary peer-checked:text-primary-content font-bold">
+                        <h3 class="text-xl">Windows Batch Script (create_flask_structure.bat)</h3>
+                    </div>
+                    <div class="collapse-content bg-base-100 peer-checked:bg-base-100">
+
+                        <div class="mockup-code">
+                            <pre><code id="windows-script" class="language-batch">@echo off
+echo Creating Flask application structure...
+
+:: Create main application folder and files
+mkdir app
+cd app
+type nul > __init__.py
+type nul > models.py
+type nul > forms.py
+
+:: Create routes directory and files
+mkdir routes
+cd routes
+type nul > __init__.py
+type nul > main.py
+type nul > auth.py
+cd ..
+
+:: Create static directories
+mkdir static
+cd static
+mkdir css
+mkdir js
+mkdir img
+cd css
+type nul > main.css
+cd ..
+cd js
+type nul > main.js
+cd ..
+cd ..
+
+:: Create templates directory and files
+mkdir templates
+cd templates
+type nul > base.html
+type nul > index.html
+mkdir auth
+cd auth
+type nul > login.html
+type nul > register.html
+cd ..
+cd ..
+
+:: Create config and main files
+cd ..
+type nul > config.py
+type nul > run.py
+type nul > requirements.txt
+type nul > README.md
+
+echo.
+echo Flask application structure created successfully!
+echo You can now start developing your Flask app.
+</code></pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="collapse collapse-arrow bg-base-300 border border-base-content border-opacity-20">
+                    <input type="checkbox" class="peer" /> 
+                    <div class="collapse-title bg-primary text-primary-content peer-checked:bg-primary peer-checked:text-primary-content font-bold">
+                        <h3 class="text-xl">Linux/Mac Shell Script (create_flask_structure.sh)</h3>
+                    </div>
+                    <div class="collapse-content bg-base-100 peer-checked:bg-base-100">
+
+                        <div class="mockup-code">
+                            <pre><code id="linux-script" class="language-bash">#!/bin/bash
+echo "Creating Flask application structure..."
+
+# Create main application folder and files
+mkdir -p app
+touch app/__init__.py
+touch app/models.py
+touch app/forms.py
+
+# Create routes directory and files
+mkdir -p app/routes
+touch app/routes/__init__.py
+touch app/routes/main.py
+touch app/routes/auth.py
+
+# Create static directories
+mkdir -p app/static/css app/static/js app/static/img
+touch app/static/css/main.css
+touch app/static/js/main.js
+
+# Create templates directory and files
+mkdir -p app/templates/auth
+touch app/templates/base.html
+touch app/templates/index.html
+touch app/templates/auth/login.html
+touch app/templates/auth/register.html
+
+# Create config and main files
+touch config.py
+touch run.py
+touch requirements.txt
+touch README.md
+
+echo ""
+echo "Flask application structure created successfully!"
+echo "You can now start developing your Flask app."
+
+# Make the script executable
+chmod +x create_flask_structure.sh
+</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-lg mt-4">
+                These scripts create an empty Flask project structure with all necessary directories and empty files, following the standard Flask project organization. Save the script as either <code>create_flask_structure.bat</code> (Windows) or <code>create_flask_structure.sh</code> (Linux/Mac) and run it in the directory where you want to create your new Flask project.
+            </p>
+            
+            <div class="alert alert-info shadow-lg mt-4">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <h3 class="font-bold">Helpful Notes</h3>
+                        <ul class="text-sm space-y-1 mt-1">
+                            <li>After creating the structure, you'll need to populate the files with your application code.</li>
+                            <li>Flask is flexible by design. The structure suggested here is a common convention, but you can adapt it to your specific needs.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-between">
+        <a href="{{ url_for('main.wiki_index') }}" class="btn btn-outline">Back to Wiki Index</a>
+        <a href="{{ url_for('main.templates_basics') }}" class="btn btn-primary">Next: Templates Basics</a>
+    </div>
+</div>
+
+<script>
+    // Fonction pour copier le contenu d'un script
+    function copyScript(scriptId) {
+        const scriptElement = document.getElementById(scriptId);
+        if (!scriptElement) return;
+        
+        const text = scriptElement.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            // Afficher une notification de succès
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-top toast-end';
+            toast.innerHTML = `
+                <div class="alert alert-success">
+                    <span>Script copié avec succès!</span>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            // Supprimer la notification après 3 secondes
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }).catch(err => {
+            console.error('Erreur lors de la copie:', err);
+        });
+    }
+    
+    // Exécuter immédiatement et aussi au chargement du DOM
+    (function setupTabs() {
+        // Set up tab click listeners
+        document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabId = this.getAttribute('data-tab');
+                showTab(tabId);
+            });
+        });
+        
+        // Initialize tabs
+        showTab('windows');
+    })();
+    
+    // Aussi s'exécuter après le chargement complet du DOM
+    document.addEventListener('DOMContentLoaded', function() {
+        // Réinitialiser les onglets pour s'assurer qu'ils fonctionnent
+        document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabId = this.getAttribute('data-tab');
+                showTab(tabId);
+            });
+        });
+        
+        // S'assurer que l'onglet Windows est actif par défaut
+        showTab('windows');
+    });
+    
+    function showTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+        
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+            tab.classList.remove('tab-active');
+        });
+        
+        // Show the selected tab content
+        const tabContent = document.getElementById(tabId);
+        if (tabContent) {
+            tabContent.style.display = 'block';
+        }
+        
+        // Add active class to the clicked tab
+        const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+        if (activeTab) {
+            activeTab.classList.add('tab-active');
+        }
+        
+        // Log pour débogage
+        console.log('Switched to tab:', tabId);
+    }
+</script>
 {% endblock %}

@@ -98,13 +98,6 @@
                     <div>This guide assumes you have a functioning Flask application with a well-structured codebase. Your application should follow Flask best practices like using application factories, blueprints for route organization, and proper dependency management.</div>
                 </div>
             </div>
-            
-            <div class="flex justify-center mt-6">
-                <figure class="mx-auto">
-                    <img src="https://flask.palletsprojects.com/en/2.0.x/_images/flask-logo.png" alt="Flask Logo" class="max-w-xs">
-                    <figcaption class="text-center text-sm text-gray-500 mt-2">The Flask micro-framework offers flexibility in deployment approaches</figcaption>
-                </figure>
-            </div>
         </div>
     </div>
     
@@ -1144,5 +1137,10 @@ docker-compose down</code></pre>
             <div class="mt-4 text-sm text-gray-400">Last updated: April 2025</div>
         </div>
     </div>
+</div>
+
+<div class="flex justify-between mt-8">
+    <a href="{{ url_for('main.blueprints') }}" class="btn btn-outline">Previous: Blueprints</a>
+    <a href="{{ url_for('main.wiki_index') }}" class="btn btn-primary">Back to Wiki Index</a>
 </div>
 {% endblock %}

@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Code de vérification AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3470715885235094"
+     crossorigin="anonymous"></script>
 <div class="container mx-auto px-4 py-8">
     <div class="prose dark:prose-invert max-w-none">
         <h1 class="text-3xl font-bold text-primary mb-6">JavaScript in Flask</h1>
+
         <p class="lead mb-6">
             Adding JavaScript to your Flask application enhances the user experience by providing interactivity and dynamic content without full page reloads.
             This guide covers best practices for integrating JavaScript with Flask.
         </p>
+
         <div class="alert alert-info mb-6">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <div>
@@ -16,16 +21,22 @@
             </div>
         </div>
     </div>
+    
+    {% include 'partials/adsense_mid.html' %}
+
     <div class="card bg-base-200 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-secondary text-2xl mb-4">Including JavaScript in Flask Templates</h2>
+            
             <p class="mb-4">There are several ways to include JavaScript in your Flask application:</p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">1. External JavaScript Files</h3>
             <p class="mb-2">Place your JavaScript files in the <code>static/js</code> folder and reference them in your templates:</p>
             <div class="mockup-code mb-4">
-                <pre><code class="language-html">&lt;!-- In your base.html or other template --&gt;
+                <pre><code class="language-html">&lt;!-- In your base.html or other template -->
 &lt;script src="{{ url_for('static', filename='js/script.js') }}"&gt;&lt;/script&gt;</code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">2. Inline JavaScript</h3>
             <p class="mb-2">For small scripts, you can write JavaScript directly in your HTML:</p>
             <div class="mockup-code mb-4">
@@ -36,36 +47,39 @@
     });
 &lt;/script&gt;</code></pre>
             </div>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">3. JavaScript Blocks in Templates</h3>
             <p class="mb-2">Use Jinja2 blocks to organize your scripts:</p>
             <div class="mockup-code mb-4">
-                <pre><code class="language-html">{% raw %}&lt;!-- In base.html --&gt;
+                <pre><code class="language-html">{% raw %}<!-- In base.html -->
 {% block scripts %}
-    &lt;!-- Default scripts here --&gt;
-    &lt;script src="{{ url_for('static', filename='js/common.js') }}"&gt;&lt;/script&gt;
+    <!-- Default scripts here -->
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
 {% endblock %}
 
-&lt;!-- In child.html --&gt;
+<!-- In child.html -->
 {% block scripts %}
-    {{ super() }}  &lt;!-- Include scripts from the parent template --&gt;
-    &lt;script src="{{ url_for('static', filename='js/child-specific.js') }}"&gt;&lt;/script&gt;
+    {{ super() }}  <!-- Include scripts from the parent template -->
+    <script src="{{ url_for('static', filename='js/child-specific.js') }}"></script>
 {% endblock %}{% endraw %}</code></pre>
             </div>
         </div>
     </div>
+    
     <div class="card bg-base-300 shadow-xl mb-8">
         <div class="card-body">
             <h2 class="card-title text-2xl text-accent">Passing Data from Flask to JavaScript</h2>
             <p class="text-lg mb-4">
                 Often, you'll need to pass data from your Flask backend to your JavaScript code. Here are common approaches:
             </p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">1. Template Variables</h3>
             <p class="mb-2">Use Jinja2 template variables to inject Python data into JavaScript:</p>
             <div class="mockup-code mb-4">
                 <pre><code class="language-html">&lt;script&gt;
     // In your Flask route: render_template('page.html', user_name='Alice', items=[1, 2, 3])
-    const userName = "{{ user_name }}";
-    const items = {{ items|tojson }};
+    const userName = "{{ 'Alice' }}";
+    const items = {{ [1, 2, 3]|tojson }};
     
     console.log(`Hello, ${userName}!`);
     console.log('Items:', items);
@@ -74,12 +88,13 @@
             <p class="mb-4">
                 Note the use of the <code>tojson</code> filter, which safely converts Python objects to JSON for use in JavaScript. This is crucial for security and correctness.
             </p>
+            
             <h3 class="text-xl font-semibold text-secondary mb-2">2. Data Attributes</h3>
             <p class="mb-2">Store data in HTML data attributes and access them with JavaScript:</p>
             <div class="mockup-code mb-4">
-                <pre><code class="language-html">&lt;!-- In your template --&gt;
-&lt;div id="user-info" data-user-id="{{ user.id }}" data-user-name="{{ user.name }}"&gt;
-    Welcome, {{ user.name }}!
+                <pre><code class="language-html">&lt;!-- In your template -->
+&lt;div id="user-info" data-user-id="{{ '123' }}" data-user-name="{{ 'John Doe' }}">
+    Welcome, {{ 'John Doe' }}!
 &lt;/div&gt;
 
 &lt;script&gt;
@@ -87,7 +102,311 @@
     const userInfo = document.getElementById('user-info');
     const userId = userInfo.dataset.userId;
     const userName = userInfo.dataset.userName;
+    
+    console.log(`User ID: ${userId}, Name: ${userName}`);
 &lt;/script&gt;</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">3. Hidden Input Fields</h3>
+            <p class="mb-2">Another approach is to use hidden input fields:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">&lt;input type="hidden" id="config" value="{{ {'apiUrl': '/api/v1', 'theme': 'dark'}|tojson }}">
+
+&lt;script&gt;
+    // In your Flask route: config_json = json.dumps({'apiUrl': '/api/v1', 'theme': 'dark'})
+    const config = JSON.parse(document.getElementById('config').value);
+    console.log('API URL:', config.apiUrl);
+&lt;/script&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">AJAX and Fetch API</h2>
+            <p class="text-lg mb-4">
+                One of the most powerful ways to use JavaScript with Flask is to create interactive applications that communicate with the server without page reloads. This is typically done using AJAX (Asynchronous JavaScript and XML) or the modern Fetch API.
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Flask API Endpoint</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python">@app.route('/api/data')
+def get_data():
+    data = {
+        'name': 'Flask API',
+        'version': '1.0',
+        'features': ['Routing', 'Templating', 'RESTful']
+    }
+    return jsonify(data)
+
+@app.route('/api/items/&lt;int:item_id&gt;')
+def get_item(item_id):
+    # Typically you would fetch this from a database
+    items = {
+        1: {'id': 1, 'name': 'Item One', 'price': 19.99},
+        2: {'id': 2, 'name': 'Item Two', 'price': 29.99},
+        3: {'id': 3, 'name': 'Item Three', 'price': 39.99}
+    }
+    
+    if item_id in items:
+        return jsonify(items[item_id])
+    else:
+        return jsonify({'error': 'Item not found'}), 404</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">JavaScript Fetch Example</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-javascript">// Load data when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const dataContainer = document.getElementById('data-container');
+    
+    // Fetch data from our API endpoint
+    fetch('/api/data')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Build HTML from the data
+            let html = `
+                <h2>${data.name} v${data.version}</h2>
+                <ul>
+                    ${data.features.map(feature => `<li>${feature}</li>`).join('')}
+                </ul>
+            `;
+            dataContainer.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            dataContainer.innerHTML = '<p class="text-error">Error loading data.</p>';
+        });
+    
+    // Set up buttons to load individual items
+    const buttons = document.querySelectorAll('.load-item-btn');
+    const itemDetailContainer = document.getElementById('item-detail');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item-id');
+            
+            fetch(`/api/items/${itemId}`)
+                .then(response => response.json())
+                .then(item => {
+                    itemDetailContainer.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <p>Price: $${item.price}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    itemDetailContainer.innerHTML = '<p class="text-error">Error loading item</p>';
+                });
+        });
+    });
+});</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Creating the Corresponding HTML</h3>
+            <p class="mb-2">The HTML that works with this JavaScript:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">&lt;div class="container">
+    &lt;h1>AJAX Demo&lt;/h1>
+    
+    &lt;div id="data-container">
+        &lt;p>Loading data...&lt;/p>
+    &lt;/div>
+    
+    &lt;div class="buttons">
+        &lt;button class="load-item-btn" data-item-id="1">Load Item 1&lt;/button>
+        &lt;button class="load-item-btn" data-item-id="2">Load Item 2&lt;/button>
+        &lt;button class="load-item-btn" data-item-id="3">Load Item 3&lt;/button>
+    &lt;/div>
+    
+    &lt;div id="item-detail">
+        &lt;p>Select an item to view details&lt;/p>
+    &lt;/div>
+&lt;/div></code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Form Handling with JavaScript</h2>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">AJAX Form Submission</h3>
+            <p class="mb-2">Here's an example of submitting a form asynchronously:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">&lt;form id="contact-form">
+    &lt;div class="form-group">
+        &lt;label for="name">Name:&lt;/label>
+        &lt;input type="text" id="name" name="name" required>
+    &lt;/div>
+    &lt;div class="form-group">
+        &lt;label for="email">Email:&lt;/label>
+        &lt;input type="email" id="email" name="email" required>
+    &lt;/div>
+    &lt;div class="form-group">
+        &lt;label for="message">Message:&lt;/label>
+        &lt;textarea id="message" name="message" required>&lt;/textarea>
+    &lt;/div>
+    &lt;button type="submit">Send Message&lt;/button>
+    &lt;div id="form-status">&lt;/div>
+&lt;/form>
+
+&lt;script>
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        
+        const formData = new FormData(this);
+        const statusDiv = document.getElementById('form-status');
+        
+        statusDiv.textContent = 'Sending...';
+        
+        fetch('/api/contact', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                statusDiv.textContent = 'Message sent successfully!';
+                this.reset(); // Clear the form
+            } else {
+                statusDiv.textContent = `Error: ${data.error}`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            statusDiv.textContent = 'An error occurred. Please try again.';
+        });
+    });
+&lt;/script></code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">The Corresponding Flask Route</h3>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-python">@app.route('/api/contact', methods=['POST'])
+def contact():
+    try:
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        
+        # Validate inputs
+        if not all([name, email, message]):
+            return jsonify({'success': False, 'error': 'All fields are required'})
+        
+        # Here you would typically send an email or save to database
+        # For example:
+        # send_email(name, email, message)
+        # or:
+        # db.contacts.insert_one({'name': name, 'email': email, 'message': message})
+        
+        # For demonstration, we'll just log the message
+        app.logger.info(f"Contact form submission: {name} ({email}): {message}")
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        app.logger.error(f"Error in contact form: {str(e)}")
+        return jsonify({'success': False, 'error': 'Server error, please try again'})</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Using JavaScript Libraries with Flask</h2>
+            <p class="text-lg mb-4">
+                Modern web development often involves using JavaScript libraries and frameworks. Here's how to integrate them with Flask:
+            </p>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. Using CDN Links</h3>
+            <p class="mb-2">The simplest approach is to include libraries via CDN links:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">&lt;!-- In your base.html -->
+&lt;head&gt;
+    &lt;!-- jQuery -->
+    &lt;script src="https://code.jquery.com/jquery-3.6.0.min.js"&gt;&lt;/script&gt;
+    
+    &lt;!-- Bootstrap CSS and JS -->
+    &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+    
+    &lt;!-- Your custom scripts -->
+    &lt;script src="{{ url_for('static', filename='js/script.js') }}"&gt;&lt;/script&gt;
+&lt;/head&gt;</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Installing Libraries Locally</h3>
+            <p class="mb-2">For more control or offline usage, download libraries to your static folder:</p>
+            <div class="mockup-code mb-4">
+                <pre><code class="language-html">&lt;!-- In your template -->
+&lt;script src="{{ url_for('static', filename='js/lib/jquery-3.6.0.min.js') }}"&gt;&lt;/script&gt;
+&lt;script src="{{ url_for('static', filename='js/lib/chart.min.js') }}"&gt;&lt;/script&gt;</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">3. Using npm and Build Tools</h3>
+            <p class="mb-2">For larger projects, consider using npm with build tools like Webpack:</p>
+            <ol class="list-decimal list-inside space-y-2 mb-4">
+                <li>Set up a <code>package.json</code> file and install dependencies</li>
+                <li>Configure Webpack to bundle your JavaScript files</li>
+                <li>Set up a build process that outputs to Flask's static directory</li>
+            </ol>
+            <p class="text-lg">
+                This approach is more complex but offers benefits like code splitting, tree shaking, and module bundling.
+            </p>
+        </div>
+    </div>
+
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-secondary text-2xl mb-4">Security Considerations</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th>Risk</th>
+                            <th>Prevention</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cross-Site Scripting (XSS)</td>
+                            <td>Use the <code>|tojson</code> filter when passing data to JavaScript. Always escape user input.</td>
+                        </tr>
+                        <tr>
+                            <td>Cross-Site Request Forgery (CSRF)</td>
+                            <td>Include CSRF tokens in your forms and AJAX requests using Flask-WTF.</td>
+                        </tr>
+                        <tr>
+                            <td>Exposing Sensitive Data</td>
+                            <td>Never pass sensitive data (API keys, credentials) to the client-side JavaScript.</td>
+                        </tr>
+                        <tr>
+                            <td>Insecure Direct Object References</td>
+                            <td>Always validate permissions on the server-side, not just in JavaScript.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="alert alert-warning mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <div class="font-bold">Security Warning</div>
+                    <div>Never trust data coming from the client. Always validate and sanitize user input on the server side.</div>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <div class="flex justify-between">
+                    <a href="{{ url_for('main.static_files') }}" class="btn btn-outline">Previous: Static Files</a>
+                    <a href="{{ url_for('main.database_integration') }}" class="btn btn-primary">Next: Database Integration</a>
+                </div>
             </div>
         </div>
     </div>

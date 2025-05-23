@@ -1,13 +1,21 @@
 {% extends "base.html" %}
+
 {% block content %}
+<!-- Code de vérification AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3470715885235094"
+     crossorigin="anonymous"></script>
     <div class="prose max-w-none">
         <h1 class="text-center text-4xl font-bold mb-8 text-primary">RESTful APIs with Flask</h1>
+        
         <div class="alert alert-info mb-8">
             <div class="flex">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span>This tutorial provides an academic overview of building RESTful APIs with Flask, covering best practices, common pitfalls, and advanced patterns.</span>
             </div>
         </div>
+        
+        {% include 'partials/adsense_mid.html' %}
+        
         <div class="card bg-base-200 shadow-xl mb-8">
             <div class="card-body">
                 <h2 class="card-title text-2xl">Table of Contents</h2>
@@ -42,54 +50,1693 @@
                 </div>
             </div>
         </div>
-        <div id="advanced-security" class="card bg-base-300 shadow-xl mb-8">
-            <div class="card-body">
-                <h2 class="card-title text-2xl text-accent">Advanced Security for RESTful APIs</h2>
-                <p class="text-lg mb-4">
-                    Security is a critical aspect of RESTful APIs, especially when they are publicly exposed. Here are advanced techniques to secure your APIs beyond basic authentication.
-                </p>
-                <div class="alert alert-warning mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+    </div>
+
+    <div id="advanced-security" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Advanced Security for RESTful APIs</h2>
+            <p class="text-lg mb-4">
+                Security is a critical aspect of RESTful APIs, especially when they are publicly exposed. Here are advanced techniques to secure your APIs beyond basic authentication.
+            </p>
+            
+            <div class="alert alert-warning mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <h3 class="font-bold">Warning!</h3>
+                    <div>API security is a constantly evolving field. Make sure to stay up-to-date with the latest practices and vulnerabilities.</div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div>
-                        <h3 class="font-bold">Warning!</h3>
-                        <div>API security is a constantly evolving field. Make sure to stay up-to-date with the latest practices and vulnerabilities.</div>
+                        <p class="font-semibold">OWASP API Security Top 10</p>
+                        <p>The Open Web Application Security Project (OWASP) identifies the top API security risks. The most critical include:</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li><strong>Broken Object Level Authorization</strong> - Attackers can access unauthorized resources</li>
+                            <li><strong>Broken Authentication</strong> - Vulnerabilities in authentication mechanisms</li>
+                            <li><strong>Excessive Data Exposure</strong> - APIs returning more data than needed</li>
+                            <li><strong>Lack of Resources & Rate Limiting</strong> - Vulnerability to DoS attacks</li>
+                            <li><strong>Broken Function Level Authorization</strong> - Unauthorized function access</li>
+                        </ul>
+                        <p class="mt-2">These risks require specific security controls which we'll address below.</p>
                     </div>
                 </div>
-                <div class="alert alert-info mt-4 mb-4">
-                    <div class="flex items-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <div>
-                            <p class="font-semibold">OWASP API Security Top 10</p>
-                            <p>The Open Web Application Security Project (OWASP) identifies the top API security risks. The most critical include:</p>
-                            <ul class="list-disc ml-5 mt-2">
-                                <li><strong>Broken Object Level Authorization</strong> - Attackers can access unauthorized resources</li>
-                                <li><strong>Broken Authentication</strong> - Vulnerabilities in authentication mechanisms</li>
-                                <li><strong>Excessive Data Exposure</strong> - APIs returning more data than needed</li>
-                                <li><strong>Lack of Resources & Rate Limiting</strong> - Vulnerability to DoS attacks</li>
-                                <li><strong>Broken Function Level Authorization</strong> - Unauthorized function access</li>
-                            </ul>
-                            <p class="mt-2">These risks require specific security controls which we'll address below.</p>
-                        </div>
-                    </div>
-                </div>
-                <h3 class="text-xl font-semibold text-secondary mb-2">1. CSRF Protection for APIs</h3>
-                <p class="text-lg mb-4">
-                    Although RESTful APIs are often considered stateless, CSRF protection may be necessary if you're using cookies for authentication:
-                </p>
-                <div class="mockup-code mb-4">
-                    <pre><code>from flask_wtf.csrf import CSRFProtect
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">1. CSRF Protection for APIs</h3>
+            <p class="text-lg mb-4">
+                Although RESTful APIs are often considered stateless, CSRF protection may be necessary if you're using cookies for authentication:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask_wtf.csrf import CSRFProtect
 
 # Initialize CSRF protection
 csrf = CSRFProtect()
 
 def create_app():
     app = Flask(__name__)
+    
     # Configure CSRF protection
     app.config['WTF_CSRF_ENABLED'] = True
     app.config['WTF_CSRF_SECRET_KEY'] = os.environ.get('CSRF_SECRET_KEY')
-    csrf.init_app(app)</code></pre>
+    csrf.init_app(app)
+    
+    # Apply CSRF protection selectively
+    # Exempt certain endpoints if needed (like webhooks)
+    @csrf.exempt
+    @app.route('/api/webhook', methods=['POST'])
+    def webhook():
+        # Webhook processing without CSRF checks
+        pass
+        
+    # For protected routes, clients need to include CSRF token
+    # in X-CSRF-Token header or as a form field
+    @app.route('/api/protected', methods=['POST'])
+    def protected_endpoint():
+        # This endpoint is protected by CSRF
+        # The request must include a valid CSRF token
+        return jsonify({"status": "success"})</code></pre>
+            </div>
+            
+            <div class="alert alert-warning mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 mr-3 mt-1" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div>
+                        <p class="font-semibold">When Do APIs Need CSRF Protection?</p>
+                        <p>CSRF protection is primarily needed when:</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li>Your API uses cookies for authentication (session-based auth)</li>
+                            <li>The API is accessed from browsers (not just server-to-server)</li>
+                            <li>Requests modify state (POST, PUT, DELETE methods)</li>
+                        </ul>
+                        <p>APIs using token-based authentication (JWT in Authorization header) typically don't need CSRF protection as the token isn't automatically included in cross-site requests.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">2. Advanced Input Validation</h3>
+            <p class="text-lg mb-4">
+                Input validation is your first line of defense against injection attacks. Implement comprehensive validation:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from marshmallow import Schema, fields, validate, validates, ValidationError
+import re
+
+class UserInputSchema(Schema):
+    """
+    Advanced input validation schema with multiple validation layers
+    
+    Combines marshmallow built-in validators with custom validators
+    to ensure data integrity and security
+    """
+    # String validation with specific pattern matching
+    name = fields.String(
+        required=True, 
+        validate=[
+            validate.Length(min=1, max=50),
+            # Regex pattern to prevent injection
+            validate.Regexp(r'^[a-zA-Z0-9_\- ]+$', error="Name contains invalid characters")
+        ]
+    )
+    
+    # Email validation (built-in)
+    email = fields.Email(required=True)
+    
+    # Numeric range validation
+    age = fields.Integer(validate=validate.Range(min=0, max=120))
+    
+    # Custom validation methods for complex rules
+    password = fields.String(required=True)
+    
+    @validates('password')
+    def validate_password(self, value):
+        """
+        Custom validator for password complexity requirements
+        
+        Enforces multiple security rules simultaneously
+        """
+        if len(value) < 8:
+            raise ValidationError("Password must be at least 8 characters")
+            
+        if not re.search(r'[A-Z]', value):
+            raise ValidationError("Password must contain an uppercase letter")
+            
+        if not re.search(r'[a-z]', value):
+            raise ValidationError("Password must contain a lowercase letter")
+            
+        if not re.search(r'[0-9]', value):
+            raise ValidationError("Password must contain a number")
+            
+        if not re.search(r'[^A-Za-z0-9]', value):
+            raise ValidationError("Password must contain a special character")
+
+# Usage in an API endpoint
+@app.route('/api/users', methods=['POST'])
+def create_user():
+    try:
+        # Validate and sanitize input data
+        schema = UserInputSchema()
+        data = schema.load(request.json)
+    except ValidationError as err:
+        # Return detailed validation errors
+        return jsonify({"error": "Validation failed", "details": err.messages}), 422
+        
+    # Process validated data safely
+    # ...</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">3. Advanced JWT Token Management</h3>
+            <p class="text-lg mb-4">
+                Implement advanced security practices for JWT tokens:
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Practice</th>
+                            <th>Description</th>
+                            <th>Implementation Approach</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">Key Rotation</td>
+                            <td>Regularly change JWT signing keys to limit the impact of a compromised key.</td>
+                            <td>Implement a schedule to rotate keys and maintain a transitional period where both old and new keys are valid.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Token Revocation</td>
+                            <td>Implement a mechanism to revoke specific tokens in case of compromise.</td>
+                            <td>Use a Redis or database blocklist to store revoked token identifiers.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Claims Validation</td>
+                            <td>Thoroughly validate all token claims, including standard ones.</td>
+                            <td>Check issuer, audience, expiration, and custom claims with appropriate context.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Payload Minimization</td>
+                            <td>Include only necessary data in token payload.</td>
+                            <td>Avoid sensitive data; use user ID to fetch additional data as needed.</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">RS256 Signature</td>
+                            <td>Prefer asymmetric algorithms like RS256 over HS256 for better security.</td>
+                            <td>Use public/private key pairs with the private key securely stored.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mockup-code mb-4 mt-4">
+                <pre><code># Complete token revocation with Redis
+from flask_jwt_extended import get_jwt
+import redis
+from datetime import timedelta
+
+# Define token expiration time
+ACCESS_EXPIRES = timedelta(hours=1)
+
+# Initialize Redis for token blocklist
+jwt_redis_blocklist = redis.StrictRedis(
+    host="localhost", port=6379, db=0, decode_responses=True
+)
+
+# Configure JWT to check the blocklist
+@jwt.token_in_blocklist_loader
+def check_if_token_is_revoked(jwt_header, jwt_payload):
+    """
+    Callback to check if a token is in the blocklist
+    
+    This gets called automatically for each JWT-protected endpoint
+    """
+    jti = jwt_payload["jti"]  # JWT ID is a unique identifier
+    token_in_redis = jwt_redis_blocklist.get(jti)
+    return token_in_redis is not None
+
+# Set up a timer to automatically remove expired tokens from blocklist
+from flask import Flask
+from apscheduler.schedulers.background import BackgroundScheduler
+
+def create_app():
+    app = Flask(__name__)
+    # ... other configuration
+    
+    # Set up scheduler to clean blocklist
+    scheduler = BackgroundScheduler()
+    
+    # Function to clean expired blocklist entries
+    def clean_expired_tokens():
+        """Remove expired tokens from the blocklist to save memory"""
+        app.logger.info("Cleaning expired tokens from blocklist")
+        # Implement cleaning logic using Redis SCAN and TTL
+    
+    # Run every day at midnight
+    scheduler.add_job(clean_expired_tokens, 'cron', hour=0, minute=0)
+    scheduler.start()
+    
+    return app
+
+# Endpoint to revoke a token (logout)
+@app.route("/api/auth/logout", methods=["DELETE"])
+@jwt_required()
+def logout():
+    """
+    Revoke the current user's JWT token
+    
+    Adds the token's JTI to Redis with an expiration 
+    equal to the token's remaining lifetime
+    """
+    jwt_payload = get_jwt()
+    jti = jwt_payload["jti"]
+    
+    # Calculate token's remaining lifetime
+    exp_timestamp = jwt_payload["exp"]
+    now = datetime.now(timezone.utc)
+    target_timestamp = datetime.timestamp(now)
+    ttl = int(exp_timestamp - target_timestamp)
+    
+    # Add token to blocklist with appropriate expiry
+    jwt_redis_blocklist.set(jti, "", ex=ttl)
+    
+    return jsonify(msg="Successfully logged out"), 200</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">4. HTTP Headers Security</h3>
+            <p class="text-lg mb-4">
+                Properly configure HTTP security headers to protect your API and its clients:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask import Flask
+from flask_talisman import Talisman
+
+app = Flask(__name__)
+
+# Configure Talisman for advanced HTTP security headers
+talisman = Talisman(
+    app,
+    # Content Security Policy to prevent XSS attacks
+    content_security_policy={
+        'default-src': "'self'",  # Default to same-origin
+        'img-src': '*',           # Images can be loaded from anywhere
+        'script-src': [
+            "'self'", 
+            "'unsafe-inline'",    # Allow inline scripts (careful with this)
+            'https://cdnjs.cloudflare.com'  # Allow specific CDNs
+        ],
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'connect-src': ["'self'", "https://api.example.com"]
+    },
+    # Force HTTPS on all connections
+    force_https=True,
+    # HTTP Strict Transport Security header
+    # Ensures future requests use HTTPS only
+    strict_transport_security=True,
+    # X-Frame-Options header to prevent clickjacking
+    frame_options='DENY',
+    # X-Content-Type-Options header to prevent MIME sniffing
+    content_type_nosniff=True,
+    # Feature-Policy header to restrict browser features
+    feature_policy={
+        'geolocation': "'none'",
+        'microphone': "'none'",
+        'camera': "'none'",
+        'payment': "'self'"
+    },
+    # Referrer-Policy header to control referrer information
+    referrer_policy='strict-origin-when-cross-origin'
+)
+
+# For API-only applications, you might want to set CORS headers
+from flask_cors import CORS
+
+# Configure CORS for API endpoints
+cors = CORS(
+    app, 
+    resources={
+        # Apply to all API routes
+        r"/api/*": {
+            # Define allowed origins (can be specific domains)
+            "origins": [
+                "https://your-frontend-app.com", 
+                "https://admin.your-app.com"
+            ],
+            # Allow specific headers
+            "allow_headers": [
+                "Content-Type", 
+                "Authorization", 
+                "X-API-Key"
+            ],
+            # Allow specific HTTP methods
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            # Allow credentials (cookies, authorization headers)
+            "supports_credentials": True,
+            # Cache preflight requests
+            "max_age": 86400  # 24 hours
+        }
+    }
+)</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">5. Rate Limiting and Throttling</h3>
+            <p class="text-lg mb-4">
+                Protect your API from abuse and denial-of-service attacks with rate limiting:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask import Flask, request, jsonify
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+app = Flask(__name__)
+
+# Initialize rate limiter
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,  # Use IP address as identifier
+    default_limits=["200 per day", "50 per hour"],  # Global limits
+    storage_uri="redis://localhost:6379/0"  # Redis for distributed systems
+)
+
+# More sophisticated key function that includes the user ID when authenticated
+def get_identifier():
+    """
+    Custom rate limit key function
+    
+    Uses authenticated user ID if available, falls back to IP address
+    """
+    # Try to get JWT identity if available
+    try:
+        from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+        verify_jwt_in_request(optional=True)
+        user_id = get_jwt_identity()
+        if user_id:
+            return f"user:{user_id}"
+    except:
+        pass
+    
+    # Fall back to IP address if user isn't authenticated
+    return f"ip:{get_remote_address()}"
+
+# Create limiter with custom key function
+limiter = Limiter(
+    app,
+    key_func=get_identifier,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="redis://localhost:6379/0"
+)
+
+# Apply different limits to different endpoints
+@app.route("/api/public")
+@limiter.limit("1000 per day")  # More generous limit for public endpoint
+def public_endpoint():
+    return jsonify({"status": "public data"})
+
+@app.route("/api/sensitive")
+@limiter.limit("10 per minute")  # Stricter limit for sensitive endpoint
+def sensitive_endpoint():
+    return jsonify({"status": "sensitive data"})
+
+# Dynamic rate limits based on user role
+@app.route("/api/data")
+@jwt_required()
+def data_endpoint():
+    # Get current user's role from JWT claims
+    claims = get_jwt()
+    user_role = claims.get("role", "user")
+    
+    # Apply different limits based on role
+    if user_role == "admin":
+        # Allow more requests for admins
+        limiter.limit("1000 per hour")(lambda: None)()
+    elif user_role == "premium":
+        # Medium limit for premium users
+        limiter.limit("100 per hour")(lambda: None)()
+    else:
+        # Stricter limit for regular users
+        limiter.limit("20 per hour")(lambda: None)()
+    
+    return jsonify({"status": "data endpoint"})
+
+# Create a custom error handler for rate limit exceeded
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    """Custom response for rate limit exceeded"""
+    return jsonify({
+        "error": "Rate limit exceeded",
+        "message": str(e.description),
+        "retry_after": e.headers.get('Retry-After', 60)
+    }), 429</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">6. Security Audit and Logging</h3>
+            <p class="text-lg mb-4">
+                Implement a robust logging system to detect and respond to security incidents:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>import logging
+import json
+from datetime import datetime
+from flask import request, g
+import uuid
+from logging.handlers import RotatingFileHandler
+import traceback
+
+# Create a security logger with rotating file handler
+def configure_security_logging(app):
+    """Set up specialized security logging for the application"""
+    
+    # Configure the security logger
+    security_logger = logging.getLogger('api.security')
+    security_logger.setLevel(logging.INFO)
+    
+    # Create a rotating file handler (10MB files, max 10 files)
+    handler = RotatingFileHandler(
+        'logs/security.log', 
+        maxBytes=10*1024*1024,  # 10MB
+        backupCount=10
+    )
+    
+    # Create formatter with detailed information
+    formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s'
+    )
+    handler.setFormatter(formatter)
+    security_logger.addHandler(handler)
+    
+    # Attach the logger to the app for easy access
+    app.security_logger = security_logger
+    
+    # Request ID middleware
+    @app.before_request
+    def log_request_info():
+        """Generate and log request details for each incoming request"""
+        
+        # Generate a unique request ID and attach to request context
+        request_id = str(uuid.uuid4())
+        g.request_id = request_id
+        
+        # Get relevant security information for logging
+        log_data = {
+            'request_id': request_id,
+            'timestamp': datetime.utcnow().isoformat(),
+            'method': request.method,
+            'path': request.path,
+            'remote_addr': request.remote_addr,
+            'headers': {
+                # Include relevant headers, exclude sensitive ones
+                k: v for k, v in request.headers.items()
+                if k.lower() in ['user-agent', 'content-type', 'accept']
+            },
+            'query_params': request.args.to_dict(),
+        }
+        
+        # Check for authentication information
+        try:
+            from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
+            verify_jwt_in_request(optional=True)
+            user_id = get_jwt_identity()
+            if user_id:
+                log_data['user_id'] = user_id
+        except:
+            pass
+        
+        # Log for audit trail
+        app.security_logger.info(
+            f"Request {request_id}: {json.dumps(log_data)}"
+        )
+    
+    # Register error logger
+    @app.errorhandler(Exception)
+    def log_exception(e):
+        """Log security-relevant exceptions"""
+        
+        # Don't log 404s as security issues
+        if hasattr(e, 'code') and e.code == 404:
+            return None
+            
+        # Create detailed error log
+        error_data = {
+            'request_id': getattr(g, 'request_id', 'unknown'),
+            'exception': str(e),
+            'exception_class': e.__class__.__name__,
+            'traceback': traceback.format_exc(),
+            'path': request.path,
+            'method': request.method,
+            'remote_addr': request.remote_addr
+        }
+        
+        # Log at error level
+        app.security_logger.error(
+            f"Exception: {json.dumps(error_data)}"
+        )
+        
+        # Re-raise for Flask's error handling
+        raise e
+    
+    # Authentication event logger
+    def log_auth_event(event_type, user_id, success, details=None):
+        """Log authentication and authorization events"""
+        
+        auth_data = {
+            'event_type': event_type,  # login, logout, access_denied, etc.
+            'user_id': user_id,
+            'success': success,
+            'timestamp': datetime.utcnow().isoformat(),
+            'remote_addr': request.remote_addr,
+            'user_agent': request.headers.get('User-Agent', 'unknown'),
+            'request_id': getattr(g, 'request_id', 'unknown'),
+            'details': details
+        }
+        
+        # Log auth events with appropriate level
+        if success:
+            app.security_logger.info(f"Auth: {json.dumps(auth_data)}")
+        else:
+            app.security_logger.warning(f"Auth: {json.dumps(auth_data)}")
+    
+    # Attach auth logger to app context
+    app.log_auth_event = log_auth_event
+    
+    return app
+
+# Usage example
+def create_app():
+    app = Flask(__name__)
+    # Configure security logging
+    app = configure_security_logging(app)
+    # ... other configuration
+    return app
+
+# Using the auth event logger
+@app.route("/api/auth/login", methods=["POST"])
+def login():
+    username = request.json.get("username")
+    password = request.json.get("password")
+    
+    user = User.query.filter_by(username=username).first()
+    
+    if user and user.check_password(password):
+        # Successful login
+        app.log_auth_event(
+            event_type="login", 
+            user_id=user.id, 
+            success=True
+        )
+        # Generate tokens and return response
+        return jsonify({"status": "success"})
+    else:
+        # Failed login
+        app.log_auth_event(
+            event_type="login", 
+            user_id=username,  # Just log the attempted username
+            success=False,
+            details={"reason": "Invalid credentials"}
+        )
+        return jsonify({"error": "Invalid credentials"}), 401</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div id="advanced-patterns" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Advanced Patterns for RESTful APIs</h2>
+            <p class="text-lg mb-4">
+                Beyond the basic principles, here are advanced patterns that can enhance your RESTful APIs, making them more robust, maintainable, and user-friendly.
+            </p>
+            
+            <div class="alert alert-info mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <p class="font-semibold">Advanced API Design</p>
+                        <p>A well-designed RESTful API goes beyond basic CRUD operations to offer sophisticated capabilities that enhance scalability, discoverability, and user experience. These advanced patterns apply established software engineering principles to API design:</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li><strong>Separation of Concerns</strong>: Each endpoint has a clear, focused responsibility</li>
+                            <li><strong>Progressive Enhancement</strong>: Basic functionality works for all, advanced features for those who need them</li>
+                            <li><strong>Interface Segregation</strong>: Different client needs are met with specialized endpoints</li>
+                            <li><strong>Uniform Access</strong>: Consistent patterns for accessing different resources</li>
+                            <li><strong>Information Hiding</strong>: Implementation details are abstracted away from the API consumer</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 id="pagination" class="text-xl font-semibold text-secondary mt-6 mb-2">1. Advanced Pagination Techniques</h3>
+            <p class="text-lg mb-4">
+                Pagination is essential when dealing with large datasets. Beyond basic offset-based pagination, here are sophisticated approaches:
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Pagination Type</th>
+                            <th>Description</th>
+                            <th>Best For</th>
+                            <th>Limitations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">Offset-based</td>
+                            <td>Uses <code>limit</code> and <code>offset</code> parameters</td>
+                            <td>Static data, small to medium datasets</td>
+                            <td>Performance degrades with large offsets; inconsistent with data insertions/deletions</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Cursor-based</td>
+                            <td>Uses a pointer (cursor) to the last item seen</td>
+                            <td>Real-time data, large datasets, frequently changing data</td>
+                            <td>More complex implementation; random access is difficult</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Keyset (Seek)</td>
+                            <td>Uses field values to filter subsequent pages</td>
+                            <td>Performance-critical applications with well-indexed fields</td>
+                            <td>Requires stable sorting keys; complex for multiple sort criteria</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Time-based</td>
+                            <td>Uses timestamps to paginate chronological data</td>
+                            <td>Activity feeds, logs, event streams</td>
+                            <td>Only works well for time-ordered data</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h4 class="text-lg font-semibold text-secondary mt-4 mb-2">1.1. Cursor-based Pagination Implementation</h4>
+            <p class="text-lg mb-4">
+                Cursor-based pagination offers better performance and consistency for large or frequently-changing datasets:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask import request, url_for
+from flask_restful import Resource
+from base64 import b64encode, b64decode
+import json
+
+class BookListAPI(Resource):
+    def get(self):
+        """
+        List books with cursor-based pagination
+        
+        This implementation:
+        1. Uses a cursor based on the primary key (id)
+        2. Encodes the pagination state in a base64 token for clean URLs
+        3. Provides next/prev page links in response for easier navigation
+        4. Handles edge cases like empty results
+        """
+        # Parse pagination parameters
+        page_size = min(int(request.args.get('page_size', 20)), 100)  # Cap at 100 items
+        cursor = request.args.get('cursor')  # Cursor for pagination
+        
+        # Prepare query - start with all books ordered by ID
+        query = Book.query.order_by(Book.id.asc())
+        
+        # Apply cursor filter if provided
+        cursor_id = None
+        if cursor:
+            try:
+                # Decode the cursor (base64 encoded JSON)
+                cursor_data = json.loads(b64decode(cursor).decode('utf-8'))
+                cursor_id = cursor_data.get('id')
+                if cursor_id:
+                    # Filter items after the cursor
+                    query = query.filter(Book.id > cursor_id)
+            except (ValueError, json.JSONDecodeError):
+                # Handle invalid cursor
+                return {"error": "Invalid cursor parameter"}, 400
+        
+        # Execute query with limit
+        books = query.limit(page_size + 1).all()  # Get one extra to check if more pages exist
+        
+        # Check if there are more results
+        has_more = len(books) > page_size
+        if has_more:
+            books = books[:-1]  # Remove the extra item
+        
+        # Build response with pagination metadata
+        result = {
+            'items': [book.to_dict() for book in books],
+            'page_size': page_size,
+            'has_more': has_more
+        }
+        
+        # Generate next page cursor if there are more results
+        if has_more and books:
+            # Create cursor from the last item's ID
+            last_id = books[-1].id
+            next_cursor = b64encode(json.dumps({'id': last_id}).encode('utf-8')).decode('utf-8')
+            result['next_cursor'] = next_cursor
+            
+            # Include full URL to next page for convenience
+            next_url = url_for('book_list', 
+                              page_size=page_size, 
+                              cursor=next_cursor, 
+                              _external=True)
+            result['next_page'] = next_url
+        
+        # Include current position metadata if items exist
+        if books:
+            result['position'] = {
+                'first_id': books[0].id,
+                'last_id': books[-1].id,
+                'count': len(books)
+            }
+            
+        return result, 200</code></pre>
+            </div>
+            
+            <div class="alert alert-success mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div>
+                        <p class="font-semibold">Pagination Best Practices</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li><strong>Choose the right pagination type</strong> for your data characteristics and access patterns</li>
+                            <li><strong>Always limit page size</strong> to prevent excessive resource consumption</li>
+                            <li><strong>Include pagination metadata</strong> like total count (when feasible) and links to next/previous pages</li>
+                            <li><strong>Use hypermedia links</strong> to guide clients through paginated resources</li>
+                            <li><strong>Make pagination parameters optional</strong> with sensible defaults</li>
+                            <li><strong>Document your pagination approach</strong> thoroughly in your API documentation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h4 class="text-lg font-semibold text-secondary mt-4 mb-2">1.2. Optimized Keyset Pagination</h4>
+            <p class="text-lg mb-4">
+                For high-traffic APIs, efficient pagination queries are essential. Here's an optimized keyset pagination approach:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from sqlalchemy import desc
+
+class OptimizedBookListAPI(Resource):
+    def get(self):
+        """
+        Optimized pagination using keyset pagination (seek method)
+        
+        This is highly efficient for large datasets as it:
+        1. Uses indexed columns for filtering
+        2. Doesn't need to scan through offset rows
+        3. Maintains consistency even with data modifications
+        """
+        # Parse parameters
+        page_size = min(int(request.args.get('page_size', 20)), 100)
+        sort_field = request.args.get('sort', 'created_at')  # Field to sort by
+        sort_dir = request.args.get('dir', 'desc')  # Sort direction
+        
+        # Get the "after" values from query parameters
+        after_id = request.args.get('after_id')
+        after_value = request.args.get('after_value')
+        
+        # Base query with proper sorting
+        query = Book.query
+        
+        # Apply sorting (ensure sort_field is valid to prevent SQL injection)
+        valid_sort_fields = {'id', 'title', 'created_at', 'updated_at'}
+        if sort_field not in valid_sort_fields:
+            return {"error": f"Invalid sort field. Must be one of: {valid_sort_fields}"}, 400
+            
+        # Get the model's column for the requested sort field
+        sort_column = getattr(Book, sort_field)
+        
+        # Apply sort direction
+        if sort_dir.lower() == 'desc':
+            sort_column = desc(sort_column)
+            # Secondary sort by ID for stability
+            query = query.order_by(sort_column, desc(Book.id))
+            
+            # Apply keyset pagination filter for descending order
+            if after_id and after_value:
+                # Convert after_value to appropriate type
+                typed_after_value = self._convert_type(after_value, sort_field)
+                
+                # This is the key part: efficient keyset filtering
+                query = query.filter(
+                    # Either the sort value is less than after_value
+                    (getattr(Book, sort_field) < typed_after_value) |
+                    # Or the sort value is the same but the ID is less than after_id
+                    ((getattr(Book, sort_field) == typed_after_value) & 
+                     (Book.id < int(after_id)))
+                )
+        else:
+            # Ascending order logic (similar but with opposite comparisons)
+            query = query.order_by(sort_column, Book.id)
+            
+            if after_id and after_value:
+                typed_after_value = self._convert_type(after_value, sort_field)
+                query = query.filter(
+                    (getattr(Book, sort_field) > typed_after_value) |
+                    ((getattr(Book, sort_field) == typed_after_value) & 
+                     (Book.id > int(after_id)))
+                )
+        
+        # Execute the query with limit
+        books = query.limit(page_size + 1).all()
+        
+        # Check if there are more pages
+        has_more = len(books) > page_size
+        if has_more:
+            books = books[:-1]
+            
+        # Build the response
+        result = {
+            'items': [book.to_dict() for book in books],
+            'has_more': has_more
+        }
+        
+        # Add pagination links if there are results
+        if books:
+            last_book = books[-1]
+            # Store the values needed for the next page
+            result['after'] = {
+                'id': last_book.id,
+                'value': getattr(last_book, sort_field)
+            }
+            
+            # Build next page URL
+            next_url = url_for(
+                'optimized_book_list',
+                page_size=page_size,
+                sort=sort_field,
+                dir=sort_dir,
+                after_id=last_book.id,
+                after_value=getattr(last_book, sort_field),
+                _external=True
+            )
+            result['next_page'] = next_url
+            
+        return result, 200
+        
+    def _convert_type(self, value, field):
+        """Helper to convert string values to appropriate Python types"""
+        if field == 'created_at' or field == 'updated_at':
+            from datetime import datetime
+            # Assume ISO format
+            return datetime.fromisoformat(value)
+        elif field == 'id':
+            return int(value)
+        else:
+            # String fields need no conversion
+            return value</code></pre>
+            </div>
+            
+            <h3 id="versioning" class="text-xl font-semibold text-secondary mt-6 mb-2">2. API Versioning Strategies</h3>
+            <p class="text-lg mb-4">
+                API versioning is crucial for evolving your API while maintaining backward compatibility. Here are different approaches:
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Versioning Strategy</th>
+                            <th>Implementation</th>
+                            <th>Pros</th>
+                            <th>Cons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">URI Path</td>
+                            <td><code>/api/v1/books</code><br><code>/api/v2/books</code></td>
+                            <td>Simple, explicit, widely used</td>
+                            <td>Breaks REST's resource-oriented principle; requires changing resource URLs</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Query Parameter</td>
+                            <td><code>/api/books?version=1</code></td>
+                            <td>Maintains consistent resource URLs</td>
+                            <td>Optional parameters can be missed; less visibility</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Custom Header</td>
+                            <td><code>X-API-Version: 1</code></td>
+                            <td>Cleanest URLs; separates versioning from resource identification</td>
+                            <td>Less visible; requires header manipulation; harder to test directly</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Accept Header</td>
+                            <td><code>Accept: application/vnd.company.app-v1+json</code></td>
+                            <td>Most REST-compliant; uses content negotiation</td>
+                            <td>Complex syntax; less intuitive; harder to test directly</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h4 class="text-lg font-semibold text-secondary mt-4 mb-2">2.1. Implementing URI Path Versioning</h4>
+            <p class="text-lg mb-4">
+                URI path versioning is the most straightforward approach:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask import Flask, Blueprint
+from flask_restful import Api
+
+# Create different blueprints for each API version
+api_v1 = Blueprint('api_v1', __name__, url_prefix='/api/v1')
+api_v2 = Blueprint('api_v2', __name__, url_prefix='/api/v2')
+
+# Create Flask-RESTful API instances for each version
+api_v1_instance = Api(api_v1)
+api_v2_instance = Api(api_v2)
+
+# Register resources with version-specific implementations
+api_v1_instance.add_resource(BookListResourceV1, '/books')
+api_v1_instance.add_resource(BookResourceV1, '/books/<int:id>')
+
+api_v2_instance.add_resource(BookListResourceV2, '/books')
+api_v2_instance.add_resource(BookResourceV2, '/books/<int:id>')
+
+# V2 might have additional endpoints
+api_v2_instance.add_resource(BookSearchResource, '/books/search')
+
+# In your main app file
+app = Flask(__name__)
+app.register_blueprint(api_v1)
+app.register_blueprint(api_v2)
+
+# This allows both versions to coexist
+if __name__ == '__main__':
+    app.run(debug=True)</code></pre>
+            </div>
+            
+            <h4 class="text-lg font-semibold text-secondary mt-4 mb-2">2.2. Content Negotiation with Accept Headers</h4>
+            <p class="text-lg mb-4">
+                For a more REST-compliant approach, using content negotiation:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask import Flask, request, jsonify
+from flask_restful import Resource
+
+class BookResource(Resource):
+    def get(self, book_id):
+        """
+        Get book details with content negotiation for versioning
+        
+        Clients specify version via Accept header:
+        - V1: Accept: application/vnd.myapi.v1+json
+        - V2: Accept: application/vnd.myapi.v2+json
+        """
+        # Get the Accept header
+        accept_header = request.headers.get('Accept', '')
+        
+        # Determine version from Accept header
+        if 'application/vnd.myapi.v2+json' in accept_header:
+            return self.get_v2(book_id)
+        else:
+            # Default to v1 for backward compatibility
+            return self.get_v1(book_id)
+    
+    def get_v1(self, book_id):
+        """V1 implementation"""
+        book = Book.query.get_or_404(book_id)
+        # Basic representation
+        return {
+            'id': book.id,
+            'title': book.title,
+            'author': book.author,
+            'year': book.publication_year
+        }
+    
+    def get_v2(self, book_id):
+        """V2 implementation with enhanced data"""
+        book = Book.query.get_or_404(book_id)
+        # Enhanced representation with more fields and HATEOAS links
+        return {
+            'id': book.id,
+            'title': book.title,
+            'author': {
+                'name': book.author,
+                'bio': book.author_bio
+            },
+            'publication': {
+                'year': book.publication_year,
+                'publisher': book.publisher,
+                'isbn': book.isbn
+            },
+            'summary': book.summary,
+            'genres': [genre.name for genre in book.genres],
+            '_links': get_book_links(book_id, book)
+        }</code></pre>
+            </div>
+            
+            <div class="alert alert-warning mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 mr-3 mt-1" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div>
+                        <p class="font-semibold">Versioning Pitfalls</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li><strong>Too many active versions</strong> increases maintenance burden</li>
+                            <li><strong>Unclear deprecation policies</strong> can lead to continued support of legacy versions</li>
+                            <li><strong>Inconsistent versioning approaches</strong> across your API create confusion</li>
+                            <li><strong>Breaking changes in minor versions</strong> violate semantic versioning expectations</li>
+                            <li><strong>Lack of version documentation</strong> makes it difficult for clients to migrate</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <p class="font-semibold">Academic Insight: API Versioning Philosophy</p>
+                        <p>The debate around API versioning reflects broader software engineering principles:</p>
+                        <ol class="list-decimal ml-5 mt-2">
+                            <li><strong>Principle of Least Astonishment</strong>: APIs should behave predictably across versions</li>
+                            <li><strong>Separation of Concerns</strong>: Versioning information should be distinct from resource identification</li>
+                            <li><strong>Interface Segregation</strong>: Different clients may need different API versions</li>
+                            <li><strong>Backward Compatibility</strong>: Newer versions should ideally support older client expectations</li>
+                            <li><strong>Progressive Enhancement</strong>: Add new features without breaking existing functionality</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 id="caching" class="text-xl font-semibold text-secondary mt-6 mb-2">3. Effective API Caching Strategies</h3>
+            <p class="text-lg mb-4">
+                Caching can dramatically improve API performance and reduce server load, especially for read-heavy APIs.
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Caching Layer</th>
+                            <th>Implementation</th>
+                            <th>Use Cases</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">HTTP Caching</td>
+                            <td>Cache-Control headers, ETags, If-None-Match</td>
+                            <td>Public data, browser clients, CDN integration</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Application Caching</td>
+                            <td>In-memory cache (Redis/Memcached)</td>
+                            <td>Frequently accessed data, computed results, authentication tokens</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Database Caching</td>
+                            <td>Query caching, materialized views</td>
+                            <td>Complex queries, aggregations, reports</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">CDN</td>
+                            <td>Content delivery networks</td>
+                            <td>Static resources, public API responses, global distribution</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h4 class="text-lg font-semibold text-secondary mt-4 mb-2">3.1. HTTP Caching with ETags</h4>
+            <p class="text-lg mb-4">
+                Implementing HTTP caching using ETags for efficient conditional requests:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask import Flask, request, jsonify, make_response
+import hashlib
+import json
+
+app = Flask(__name__)
+
+@app.route('/api/books/<int:book_id>')
+def get_book(book_id):
+    """
+    Get book details with HTTP caching support using ETags
+    
+    ETags allow clients to make conditional requests, reducing
+    bandwidth and processing when resource hasn't changed
+    """
+    # Fetch the book from database
+    book = Book.query.get_or_404(book_id)
+    
+    # Get last modified timestamp
+    last_modified = book.updated_at.timestamp()
+    
+    # Generate data dictionary (without ETag yet)
+    data = {
+        'id': book.id,
+        'title': book.title,
+        'author': book.author,
+        'updated_at': last_modified
+    }
+    
+    # Generate ETag (hash of the data)
+    data_json = json.dumps(data, sort_keys=True)
+    etag = hashlib.md5(data_json.encode()).hexdigest()
+    
+    # Check if client sent If-None-Match header
+    if_none_match = request.headers.get('If-None-Match')
+    
+    if if_none_match and if_none_match == etag:
+        # Resource not modified, return 304 Not Modified with empty body
+        return '', 304
+    
+    # Resource modified or first request, return full response with ETag
+    response = make_response(jsonify(data))
+    response.headers['ETag'] = etag
+    response.headers['Cache-Control'] = 'max-age=300'  # Cache for 5 minutes
+    return response</code></pre>
+            </div>
+            
+            <h4 class="text-lg font-semibold text-secondary mt-4 mb-2">3.2. Application-level Caching with Redis</h4>
+            <p class="text-lg mb-4">
+                Using Redis for application-level caching of API responses:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask import Flask, request, jsonify
+import redis
+import json
+import hashlib
+from functools import wraps
+
+app = Flask(__name__)
+# Initialize Redis client
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+def cached(timeout=300):
+    """
+    Decorator for caching API responses in Redis
+    
+    Parameters:
+    - timeout: Cache expiration time in seconds (default: 5 minutes)
+    
+    This implements a pattern of:
+    1. Generate a unique cache key based on endpoint and parameters
+    2. Check if response exists in cache
+    3. Return cached response or execute view and cache result
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            # Generate a cache key based on the request
+            cache_key = generate_cache_key()
+            
+            # Try to get cached response
+            cached_response = redis_client.get(cache_key)
+            if cached_response:
+                # Return cached response if found
+                return json.loads(cached_response)
+            
+            # Execute the view function if no cached response
+            response = f(*args, **kwargs)
+            
+            # Cache the response (only if status code is 200)
+            if response[1] == 200:  # Assuming response is (data, status_code)
+                redis_client.setex(
+                    cache_key,
+                    timeout,
+                    json.dumps(response[0])
+                )
+            
+            return response
+        return decorated_function
+    return decorator
+
+def generate_cache_key():
+    """Generate a cache key based on the request"""
+    # Include path, query parameters, and possibly auth info in key
+    key_parts = [
+        request.path,
+        str(sorted(request.args.items())),
+    ]
+    
+    # Add user info if authenticated request (for user-specific caching)
+    # This ensures users don't see each other's data from cache
+    user_id = get_current_user_id()  # Your authentication logic
+    if user_id:
+        key_parts.append(str(user_id))
+    
+    # Create a hash of the parts
+    key = hashlib.md5('|'.join(key_parts).encode()).hexdigest()
+    return f"api:cache:{key}"
+
+@app.route('/api/books')
+@cached(timeout=300)  # Cache for 5 minutes
+def get_books():
+    """Get a list of books with caching"""
+    # Apply filters from query params
+    query = Book.query
+    
+    # Apply filters from request args
+    author = request.args.get('author')
+    if author:
+        query = query.filter(Book.author.like(f'%{author}%'))
+    
+    # This expensive database query now only runs on cache misses
+    books = query.all()
+    return jsonify([book.to_dict() for book in books]), 200
+
+@app.route('/api/cache/invalidate', methods=['POST'])
+def invalidate_cache():
+    """Invalidate cache for specific patterns (admin only)"""
+    # Check if user is admin
+    if not is_admin():
+        return jsonify({"error": "Unauthorized"}), 403
+        
+    pattern = request.json.get('pattern', 'api:cache:*')
+    
+    # Find keys matching pattern
+    keys = redis_client.keys(pattern)
+    if keys:
+        # Use redis pipeline for atomic operation with multiple keys
+        pipeline = redis_client.pipeline()
+        for key in keys:
+            pipeline.delete(key)
+        pipeline.execute()
+        return jsonify({"message": f"Invalidated {len(keys)} cache entries"}), 200
+    else:
+        return jsonify({"message": "No matching cache entries found"}), 200</code></pre>
+            </div>
+            
+            <div class="alert alert-success mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div>
+                        <p class="font-semibold">Caching Best Practices</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li><strong>Cache invalidation strategy</strong>: Determine how and when cached data becomes stale</li>
+                            <li><strong>Appropriate cache duration</strong>: Match TTL to data volatility</li>
+                            <li><strong>Cache naming conventions</strong>: Use consistent patterns for cache keys</li>
+                            <li><strong>Security considerations</strong>: Never cache sensitive data without proper isolation</li>
+                            <li><strong>Cache stampede protection</strong>: Prevent multiple simultaneous cache regeneration</li>
+                            <li><strong>Monitoring cache hit rates</strong>: Track effectiveness of your caching strategy</li>
+                            <li><strong>Atomic operations</strong>: Use pipelines for batch operations like mass invalidation</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+    
+    <div id="documentation" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">API Documentation</h2>
+            <p class="text-lg mb-4">
+                Comprehensive documentation is crucial for API adoption and developer experience. Here are best practices for documenting your RESTful API.
+            </p>
+            
+            <div class="alert alert-info mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6 mr-3 mt-1"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div>
+                        <p class="font-semibold">Documentation Best Practices</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li><strong>Interactive documentation</strong> using tools like Swagger/OpenAPI</li>
+                            <li><strong>Code examples</strong> for common use cases in multiple languages</li>
+                            <li><strong>Clear authentication instructions</strong> with step-by-step guides</li>
+                            <li><strong>Error response documentation</strong> with all possible status codes</li>
+                            <li><strong>Rate limit information</strong> and quota guidelines</li>
+                            <li><strong>Changelog</strong> for tracking API evolution</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Implementing OpenAPI Documentation</h3>
+            <p class="text-lg mb-4">
+                Using Flask-RESTX or Flask-Smorest to generate interactive API documentation:
+            </p>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>from flask import Flask
+from flask_smorest import Api, Blueprint, abort
+from marshmallow import Schema, fields
+
+app = Flask(__name__)
+
+app.config["API_TITLE"] = "Books API"
+app.config["API_VERSION"] = "v1"
+app.config["OPENAPI_VERSION"] = "3.0.2"
+app.config["OPENAPI_URL_PREFIX"] = "/"
+app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
+app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+
+api = Api(app)
+
+# Define schemas for request/response validation and documentation
+class BookSchema(Schema):
+    id = fields.Int(dump_only=True)
+    title = fields.Str(required=True)
+    author = fields.Str(required=True)
+    publication_year = fields.Int()
+    isbn = fields.Str()
+
+# Create a blueprint with automatic documentation
+books_blp = Blueprint(
+    "Books", "books", url_prefix="/api/books",
+    description="Operations on books"
+)
+
+@books_blp.route("/")
+class BookList:
+    @books_blp.response(200, BookSchema(many=True))
+    @books_blp.doc(description="Get all books")
+    def get(self):
+        """List all books"""
+        return Book.query.all()
+    
+    @books_blp.arguments(BookSchema)
+    @books_blp.response(201, BookSchema)
+    @books_blp.doc(description="Create a new book")
+    def post(self, book_data):
+        """Create a new book"""
+        book = Book(**book_data)
+        db.session.add(book)
+        db.session.commit()
+        return book
+
+@books_blp.route("/<int:book_id>")
+class BookResource:
+    @books_blp.response(200, BookSchema)
+    @books_blp.alt_response(404, description="Book not found")
+    @books_blp.doc(description="Get a specific book")
+    def get(self, book_id):
+        """Get a book by ID"""
+        book = Book.query.get_or_404(book_id)
+        return book
+
+# Register blueprint with the API
+api.register_blueprint(books_blp)</code></pre>
+            </div>
+            
+            <p class="text-lg mb-4">
+                The above implementation automatically generates interactive Swagger documentation that allows developers to explore and test your API directly from the browser.
+            </p>
+        </div>
+    </div>
+    
+    <div id="testing" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Testing Strategies for RESTful APIs</h2>
+            <p class="text-lg mb-4">
+                Comprehensive testing ensures your API performs reliably and maintains backward compatibility. Here are effective strategies for testing RESTful APIs.
+            </p>
+            
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Testing Level</th>
+                            <th>Description</th>
+                            <th>Tools</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold">Unit Testing</td>
+                            <td>Testing individual components in isolation</td>
+                            <td>pytest, unittest</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Integration Testing</td>
+                            <td>Testing interactions between components</td>
+                            <td>pytest, Flask Test Client</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Functional Testing</td>
+                            <td>Testing complete features from end to end</td>
+                            <td>pytest-flask, Requests</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Contract Testing</td>
+                            <td>Ensuring API adheres to its contract</td>
+                            <td>Pact, OpenAPI validator</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Load Testing</td>
+                            <td>Testing performance under load</td>
+                            <td>Locust, JMeter</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mt-4 mb-2">Example API Test with pytest</h3>
+            
+            <div class="mockup-code mb-4">
+                <pre><code>import pytest
+import json
+from app import create_app
+from app.models import db as _db, Book
+
+@pytest.fixture
+def app():
+    """Create application for the tests."""
+    app = create_app('testing')
+    app.config['TESTING'] = True
+    return app
+
+@pytest.fixture
+def db(app):
+    """Create a database for the tests."""
+    with app.app_context():
+        _db.create_all()
+        yield _db
+        _db.session.close()
+        _db.drop_all()
+
+@pytest.fixture
+def client(app):
+    """A test client for the app."""
+    return app.test_client()
+
+@pytest.fixture
+def book(db):
+    """Create a test book."""
+    book = Book(
+        title="Test Book",
+        author="Test Author",
+        publication_year=2020,
+        isbn="1234567890"
+    )
+    db.session.add(book)
+    db.session.commit()
+    return book
+
+def test_get_books(client):
+    """Test getting all books."""
+    response = client.get('/api/books')
+    assert response.status_code == 200
+    assert isinstance(json.loads(response.data), list)
+
+def test_get_book(client, book):
+    """Test getting a specific book."""
+    response = client.get(f'/api/books/{book.id}')
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert data['title'] == "Test Book"
+    assert data['author'] == "Test Author"
+
+def test_create_book(client, db):
+    """Test creating a new book."""
+    book_data = {
+        'title': 'New Book',
+        'author': 'New Author',
+        'publication_year': 2023
+    }
+    response = client.post(
+        '/api/books',
+        data=json.dumps(book_data),
+        content_type='application/json'
+    )
+    assert response.status_code == 201
+    data = json.loads(response.data)
+    assert data['title'] == book_data['title']
+    
+    # Verify the book was actually created in the database
+    book = Book.query.filter_by(title='New Book').first()
+    assert book is not None
+    assert book.author == 'New Author'</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <div id="deployment" class="card bg-base-300 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-accent">Deployment Best Practices</h2>
+            <p class="text-lg mb-4">
+                Deploying a Flask RESTful API to production requires careful consideration of performance, security, and reliability.
+            </p>
+            
+            <div class="alert alert-warning mt-4 mb-4">
+                <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6 mr-3 mt-1" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    <div>
+                        <p class="font-semibold">Production Deployment Checklist</p>
+                        <ul class="list-disc ml-5 mt-2">
+                            <li><strong>Never use Flask's built-in server</strong> in production (use Gunicorn, uWSGI, etc.)</li>
+                            <li><strong>Always enforce HTTPS</strong> for all API requests</li>
+                            <li><strong>Set appropriate timeout values</strong> for all external service connections</li>
+                            <li><strong>Implement proper logging</strong> for monitoring and troubleshooting</li>
+                            <li><strong>Set up health check endpoints</strong> for monitoring systems</li>
+                            <li><strong>Use environment variables</strong> for all configuration settings</li>
+                            <li><strong>Rate limit all endpoints</strong> to prevent abuse</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mb-2">Docker Deployment Example</h3>
+            
+            <div class="mockup-code mb-4">
+                <pre><code># Dockerfile for Flask API
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=production
+ENV PYTHONUNBUFFERED=1
+
+# Run gunicorn with 4 workers
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "wsgi:app"]</code></pre>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary mt-4 mb-2">Sample Docker Compose Setup</h3>
+            
+            <div class="mockup-code mb-4">
+                <pre><code># docker-compose.yml
+version: '3'
+
+services:
+  api:
+    build: .
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/database
+      - SECRET_KEY=${SECRET_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app-network
+      
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
+    networks:
+      - app-network
+      
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+      
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  postgres_data:
+  redis_data:</code></pre>
+            </div>
+            
+            <p class="text-lg mt-4">
+                With this setup, your API runs behind Nginx which handles SSL termination and proxies requests to the Flask application running in Gunicorn. The application connects to PostgreSQL for data storage and Redis for caching and session management.
+            </p>
+        </div>
+    </div>
+    
+    <div class="card bg-base-200 shadow-xl mb-8">
+        <div class="card-body">
+            <h2 class="card-title text-2xl text-primary">Additional Resources</h2>
+            <p class="text-lg mb-4">
+                Explore these free resources to further enhance your RESTful API development skills.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="card bg-base-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Official Documentation</h3>
+                        <ul class="list-disc ml-5">
+                            <li><a href="https://flask.palletsprojects.com/" class="link link-primary" target="_blank">Flask Documentation</a></li>
+                            <li><a href="https://flask-restful.readthedocs.io/" class="link link-primary" target="_blank">Flask-RESTful</a></li>
+                            <li><a href="https://marshmallow.readthedocs.io/" class="link link-primary" target="_blank">Marshmallow</a></li>
+                            <li><a href="https://flask-jwt-extended.readthedocs.io/" class="link link-primary" target="_blank">Flask-JWT-Extended</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card bg-base-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Free Tutorials</h3>
+                        <ul class="list-disc ml-5">
+                            <li><a href="https://www.digitalocean.com/community/tutorials/how-to-make-a-web-application-using-flask-in-python-3" class="link link-primary" target="_blank">Digital Ocean Flask Tutorial</a></li>
+                            <li><a href="https://realpython.com/flask-connexion-rest-api/" class="link link-primary" target="_blank">Real Python REST API Tutorial</a></li>
+                            <li><a href="https://testdriven.io/blog/flask-restx-swagger/" class="link link-primary" target="_blank">Flask RESTx with Swagger</a></li>
+                            <li><a href="https://pythonbasics.org/flask-rest-api/" class="link link-primary" target="_blank">Python Basics: Flask REST API</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card bg-base-100 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title">Best Practices & Articles</h3>
+                        <ul class="list-disc ml-5">
+                            <li><a href="https://restfulapi.net/" class="link link-primary" target="_blank">RESTful API Guidelines</a></li>
+                            <li><a href="https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api" class="link link-primary" target="_blank">Best Practices for RESTful APIs</a></li>
+                            <li><a href="https://owasp.org/www-project-api-security/" class="link link-primary" target="_blank">OWASP API Security Project</a></li>
+                            <li><a href="https://github.com/microsoft/api-guidelines/blob/vNext/Guidelines.md" class="link link-primary" target="_blank">Microsoft REST API Guidelines</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex justify-between mt-8">
+        <a href="{{ url_for('main.user_authentication') }}" class="btn btn-outline">Previous: User Authentication</a>
+        <a href="{{ url_for('main.blueprints') }}" class="btn btn-primary">Next: Blueprints</a>
     </div>
 {% endblock %}
