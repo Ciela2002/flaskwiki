@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Code de vérification AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3470715885235094"
+     crossorigin="anonymous"></script>
 <div class="hero min-h-screen bg-base-200 rounded-lg shadow-xl">
     <div class="hero-content text-center">
         <div class="max-w-3xl">
@@ -8,6 +11,8 @@
             <div class="divider"></div>
             <p class="py-2 text-xl">A community-driven wiki for learning Flask</p>
             <div class="divider"></div>
+            
+            {% include 'partials/adsense.html' %}
             
             <div class="card bg-base-300 shadow-xl mb-8">
                 <div class="card-body">
@@ -36,6 +41,8 @@
                     </ul>
                 </div>
             </div>
+            
+            {% include 'partials/adsense_mid.html' %}
             
             <div class="flex flex-col md:flex-row gap-4 justify-center">
                 <a href="{{ url_for('main.wiki_index') }}" class="btn btn-primary">Get Started with Flask</a>

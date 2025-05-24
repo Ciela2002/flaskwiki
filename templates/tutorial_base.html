@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<!-- Tutorial-specific CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tutorials.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Mobile menu toggle button -->
+<button id="sidebar-toggle" class="sidebar-toggle lg:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+</button>
+
+<div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="tutorial-sidebar">
+        <div class="toc">
+            <h3 class="text-lg font-semibold mb-4 text-white border-b border-gray-700 pb-2">Table of Contents</h3>
+            <ul>
+                {% for section in toc %}
+                <li>
+                    <a href="#{{ section.id }}" class="{% if loop.first %}active{% endif %}">
+                        {{ section.title }}
+                    </a>
+                    {% if section.subsections %}
+                    <ul class="ml-4 mt-1">
+                        {% for subsection in section.subsections %}
+                        <li>
+                            <a href="#{{ subsection.id }}" class="text-sm py-1">
+                                {{ subsection.title }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="tutorial-content flex-1">
+        <div class="prose prose-invert max-w-none">
+            {% block tutorial_content %}{% endblock %}
+        </div>
+
+
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!-- Tutorial-specific JavaScript -->
+<script src="{{ url_for('static', filename='js/tutorials.js') }}"></script>
+{% endblock %}

@@ -100,25 +100,30 @@ if __name__ == '__main__':
                             <td>URL patterns that map to view functions</td>
                         </tr>
                         <tr>
+                            <td class="font-semibold">Views</td>
+                            <td>Functions that handle requests and return responses</td>
+                        </tr>
+                        <tr>
                             <td class="font-semibold">Templates</td>
-                            <td>HTML files rendered with dynamic content using Jinja2</td>
-                        </tr>
-                        <tr>
-                            <td class="font-semibold">Static Files</td>
-                            <td>CSS, JS, and images served by Flask</td>
-                        </tr>
-                        <tr>
-                            <td class="font-semibold">Forms</td>
-                            <td>Input forms handled and validated in Flask</td>
+                            <td>HTML files with placeholders for dynamic content</td>
                         </tr>
                         <tr>
                             <td class="font-semibold">Blueprints</td>
-                            <td>Modular components for structuring large applications</td>
+                            <td>Components for organizing larger applications</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold">Extensions</td>
+                            <td>Add-ons that provide additional functionality</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+    </div>
+    
+    <div class="flex justify-between">
+        <a href="{{ url_for('main.wiki_index') }}" class="btn btn-outline">Back to Index</a>
+        <a href="{{ url_for('main.project_structure') }}" class="btn btn-primary">Next: Project Structure</a>
     </div>
 </div>
 {% endblock %}

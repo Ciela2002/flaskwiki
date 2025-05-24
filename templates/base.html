@@ -4,11 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if title %}{{ title }} - {% endif %}Flask Wiki</title>
+    <!-- Google AdSense Code -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3470715885235094"
+     crossorigin="anonymous"></script>
     <!-- Tailwind CSS and DaisyUI via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.5.0/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <!-- Colorblind Mode CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/colorblind.css') }}">
     <!-- Mobile-specific CSS -->
     {% if device_type == 'mobile' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
@@ -18,9 +23,9 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#6419E6',
-                        secondary: '#D926A9',
-                        accent: '#1FB2A6',
+                        primary: '#8A3FFF',    /* Plus lumineux pour meilleur contraste */
+                        secondary: '#FF45C6',  /* Plus lumineux pour meilleur contraste */
+                        accent: '#2ACEC1',     /* Plus lumineux pour meilleur contraste */
                     }
                 }
             },
@@ -37,6 +42,49 @@
         }
         main {
             flex: 1;
+        }
+        
+        /* Styles d'accessibilité pour améliorer le contraste */
+        .card-title, h1, h2, h3, h4, h5, h6 {
+            font-weight: 700 !important; /* Plus gras pour meilleure lisibilité */
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3); /* Ombre légère pour améliorer la lisibilité */
+        }
+        
+        h1.text-primary, h2.text-primary, h3.text-primary, 
+        h1.text-accent, h2.text-accent, h3.text-accent,
+        h1.text-secondary, h2.text-secondary, h3.text-secondary {
+            letter-spacing: 0.02em; /* Espacement des lettres pour meilleure lisibilité */
+        }
+        
+        .card-title.text-accent {
+            color: #2ACEC1 !important; /* S'assurer que la couleur d'accent est suffisamment contrastée */
+        }
+        
+        .alert {
+            border: 1px solid rgba(255,255,255,0.2); /* Bordure légère pour améliorer la visibilité */
+        }
+        
+        /* Amélioration du contraste pour les bannières et en-têtes */
+        .navbar, .card-title, .collapse-title {
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        
+        /* Amélioration du contraste pour les liens dans les alertes et panneaux */
+        .alert .link, .alert .link-primary, .alert a {
+            color: #FFD700 !important; /* Jaune doré pour un contraste élevé */
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        
+        .alert-info .link, .alert-info .link-primary, .alert-info a {
+            color: #FFD700 !important;
+        }
+        
+        .alert .link:hover, .alert .link-primary:hover, .alert a:hover {
+            color: #FFF !important;
+            text-decoration: underline;
         }
     </style>
     
@@ -63,7 +111,22 @@
     </style>
     {% endif %}
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
+    <!-- Filtres SVG pour le mode daltonien -->
+    <svg class="colorblind-filters">
+        <!-- Filtre pour Protanopie (rouge-aveugle) -->
+        <filter id="protanopia-filter" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="0.567, 0.433, 0, 0, 0 0.558, 0.442, 0, 0, 0 0, 0.242, 0.758, 0, 0 0, 0, 0, 1, 0"></feColorMatrix>
+        </filter>
+        <!-- Filtre pour Deutéranopie (vert-aveugle) -->
+        <filter id="deuteranopia-filter" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="0.625, 0.375, 0, 0, 0 0.7, 0.3, 0, 0, 0 0, 0.3, 0.7, 0, 0 0, 0, 0, 1, 0"></feColorMatrix>
+        </filter>
+        <!-- Filtre pour Tritanopie (bleu-aveugle) -->
+        <filter id="tritanopia-filter" color-interpolation-filters="sRGB">
+            <feColorMatrix type="matrix" values="0.95, 0.05, 0, 0, 0 0, 0.433, 0.567, 0, 0 0, 0.475, 0.525, 0, 0 0, 0, 0, 1, 0"></feColorMatrix>
+        </filter>
+    </svg>
     <!-- Navbar -->
     <div class="navbar bg-base-200 shadow-lg">
         <div class="navbar-start">
@@ -77,6 +140,8 @@
                     <li><a href="{{ url_for('main.index') }}">Home</a></li>
                     <li><a href="{{ url_for('main.introduction') }}">Introduction to Flask</a></li>
                     <li><a href="{{ url_for('main.wiki_index') }}">Wiki Index</a></li>
+                    <li><a href="{{ url_for('main.contribute') }}">Contribute</a></li>
+                    <li><a href="{{ url_for('main.about') }}">About</a></li>
                 </ul>
             </div>
             <a href="{{ url_for('main.index') }}" class="btn btn-ghost normal-case text-xl text-primary">Flask Wiki</a>
@@ -86,9 +151,30 @@
                 <li><a href="{{ url_for('main.index') }}">Home</a></li>
                 <li><a href="{{ url_for('main.introduction') }}">Introduction to Flask</a></li>
                 <li><a href="{{ url_for('main.wiki_index') }}">Wiki Index</a></li>
+                <li><a href="{{ url_for('main.contribute') }}">Contribute</a></li>
+                <li><a href="{{ url_for('main.about') }}">About</a></li>
             </ul>
         </div>
         <div class="navbar-end">
+            <!-- Bouton Mode Daltonien -->
+            <div class="dropdown dropdown-end mr-2">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle" title="Accessibility Options">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                    </svg>
+                </div>
+                <div tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-52">
+                    <ul id="colorblind-options" class="menu menu-sm">
+                        <li><a class="colorblind-option" data-type="normal">Normal Vision</a></li>
+                        <li><a class="colorblind-option" data-type="protanopia">Protanopia (Red-Blind)</a></li>
+                        <li><a class="colorblind-option" data-type="deuteranopia">Deuteranopia (Green-Blind)</a></li>
+                        <li><a class="colorblind-option" data-type="tritanopia">Tritanopia (Blue-Blind)</a></li>
+                        <li><a class="colorblind-option" data-type="achromatopsia">Achromatopsia (Monochrome)</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            {% if device_type == 'mobile' %}
             <div class="dropdown dropdown-end">
                 <label tabindex="0" class="btn btn-ghost btn-circle">
                     <div class="indicator">
@@ -101,11 +187,13 @@
                     <div class="card-body">
                         <div class="card-actions">
                             <a href="{{ url_for('main.index') }}" class="btn btn-primary btn-block">Home</a>
+                            <a href="{{ url_for('main.wiki_index') }}" class="btn btn-ghost btn-block font-bold text-primary">Wiki</a>
                             <a href="{{ url_for('main.introduction') }}" class="btn btn-ghost btn-block">Introduction</a>
                         </div>
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 
@@ -126,10 +214,25 @@
     {% endwith %}
 
     <!-- Main content -->
+    <div class="colorblind-container flex-grow">
     <main class="container mx-auto px-4 py-8">
-        {{ ... }}
+        {% if request.path.startswith('/rs/') %}
+        <!-- AdSense Top -->
+        <div class="mb-6">
+            {% include 'partials/adsense.html' %}
+        </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+        
+        {% if request.path.startswith('/rs/') %}
+        <!-- AdSense Bottom -->
+        <div class="mt-6">
+            {% include 'partials/adsense.html' %}
+        </div>
+        {% endif %}
     </main>
-
+    
     <!-- Back to top button - only visible on rs/ pages -->
     {% if request.path.startswith('/rs/') %}
     <button id="back-to-top" class="btn btn-circle btn-primary fixed bottom-8 right-8 opacity-70 hover:opacity-100 shadow-lg" style="display: none;">
@@ -138,20 +241,42 @@
         </svg>
     </button>
     {% endif %}
-
+    
     <!-- Footer -->
     <footer class="footer footer-center p-10 bg-base-200 text-base-content">
         <div>
             <div class="grid grid-flow-col gap-4">
                 <a href="{{ url_for('main.contribute') }}" class="link link-hover">Contribute</a>
                 <a href="{{ url_for('main.about') }}" class="link link-hover">About</a>
+                <a href="https://github.com/Ciela2002/flaskwiki/tree/main" target="_blank" class="link link-hover flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fill-current mr-1">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    GitHub
+                </a>
+                <div class="dropdown dropdown-top">
+                    <a tabindex="0" class="link link-hover font-semibold text-primary">Color Blind Mode</a>
+                    <div tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52">
+                        <ul id="colorblind-options" class="menu menu-sm">
+                            <li><a class="colorblind-option" data-type="normal">Normal Vision</a></li>
+                            <li><a class="colorblind-option" data-type="protanopia">Protanopia (Red-Blind)</a></li>
+                            <li><a class="colorblind-option" data-type="deuteranopia">Deuteranopia (Green-Blind)</a></li>
+                            <li><a class="colorblind-option" data-type="tritanopia">Tritanopia (Blue-Blind)</a></li>
+                            <li><a class="colorblind-option" data-type="achromatopsia">Achromatopsia (Monochromacy)</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <p>Copyright &copy; {{ now.year }} - Flask Wiki - A Non-Profit Educational Project</p>
         </div>
     </footer>
     
-    <!-- Include custom JavaScript -->
+    <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Colorblind Mode JavaScript -->
+    <script src="{{ url_for('static', filename='js/colorblind.js') }}"></script>
+    <!-- Colorblind Mode JavaScript -->
+    <script src="{{ url_for('static', filename='js/colorblind.js') }}"></script>
     
     <!-- Back to top button script - only included on rs/ pages -->
     {% if request.path.startswith('/rs/') %}
